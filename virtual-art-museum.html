@@ -1,0 +1,3088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <title>Virtual Art Museum — The Aurelia Collection</title>
+  <style>
+    /* ================================================================
+       VIRTUAL ART MUSEUM — SINGLE-FILE EXPERIENCE
+       All visual assets, interactions, and artwork are embedded here.
+       ================================================================ */
+
+    :root {
+      --cream: #f5ecdc;
+      --soft-cream: #eadcc4;
+      --beige: #d8c3a5;
+      --warm-beige: #c6aa83;
+      --brown: #3a261d;
+      --deep-brown: #21130f;
+      --gold: #c7a45a;
+      --bright-gold: #e5c879;
+      --burgundy: #681f32;
+      --midnight: #081426;
+      --muted-green: #5f715f;
+      --ink: #17120f;
+      --glass: rgba(15, 17, 21, 0.72);
+      --glass-border: rgba(229, 200, 121, 0.28);
+      --focus: #ffe39a;
+      --ease-out: cubic-bezier(.2, .8, .2, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: var(--midnight);
+      color: var(--cream);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button, input, textarea, select { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+    [hidden] { display: none !important; }
+
+    .sr-only {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0, 0, 0, 0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+    }
+
+    .skip-link {
+      position: fixed;
+      z-index: 999;
+      top: 12px;
+      left: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: var(--cream);
+      color: var(--deep-brown);
+      font-weight: 800;
+      transform: translateY(-150%);
+      transition: transform .2s ease;
+    }
+
+    .skip-link:focus { transform: translateY(0); }
+
+    :focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 3px;
+    }
+
+    /* ---------------------------- Welcome ---------------------------- */
+
+    .welcome-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      padding: clamp(18px, 4vw, 56px);
+      overflow: auto;
+      background:
+        radial-gradient(circle at 18% 18%, rgba(199, 164, 90, .19), transparent 28%),
+        radial-gradient(circle at 82% 22%, rgba(104, 31, 50, .2), transparent 34%),
+        linear-gradient(150deg, #06111f 0%, #11192a 45%, #24160f 100%);
+      transition: opacity .65s var(--ease-out), visibility .65s;
+    }
+
+    .welcome-screen::before {
+      content: "";
+      position: fixed;
+      inset: 44% -10% -20%;
+      background:
+        repeating-linear-gradient(90deg, rgba(229, 200, 121, .08) 0 1px, transparent 1px 130px),
+        repeating-linear-gradient(0deg, rgba(229, 200, 121, .06) 0 1px, transparent 1px 95px);
+      transform: perspective(650px) rotateX(67deg) scale(1.45);
+      transform-origin: center top;
+      pointer-events: none;
+      mask-image: linear-gradient(to bottom, transparent, black 25%, black);
+    }
+
+    .welcome-screen::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,.55), transparent 16%, transparent 84%, rgba(0,0,0,.55)),
+        radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,.42) 100%);
+    }
+
+    .welcome-screen.is-leaving {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .welcome-card {
+      position: relative;
+      z-index: 2;
+      width: min(1120px, 100%);
+      min-height: min(700px, calc(100vh - 72px));
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(340px, .92fr);
+      border: 1px solid rgba(229, 200, 121, .28);
+      border-radius: 30px;
+      overflow: hidden;
+      background: linear-gradient(145deg, rgba(16, 21, 34, .93), rgba(34, 21, 16, .91));
+      box-shadow: 0 40px 120px rgba(0,0,0,.5), inset 0 1px rgba(255,255,255,.05);
+      backdrop-filter: blur(18px);
+    }
+
+    .welcome-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(32px, 5vw, 72px);
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0 0 20px;
+      color: var(--bright-gold);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 42px;
+      height: 1px;
+      background: currentColor;
+      box-shadow: 0 0 14px currentColor;
+    }
+
+    .welcome-copy h1 {
+      margin: 0;
+      max-width: 680px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(48px, 7vw, 92px);
+      font-weight: 500;
+      line-height: .92;
+      letter-spacing: -.045em;
+      text-wrap: balance;
+    }
+
+    .welcome-copy h1 em {
+      display: block;
+      color: var(--bright-gold);
+      font-weight: 400;
+    }
+
+    .welcome-lede {
+      max-width: 620px;
+      margin: 24px 0 0;
+      color: rgba(245, 236, 220, .74);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(17px, 1.8vw, 22px);
+      line-height: 1.55;
+    }
+
+    .instruction-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 32px 0;
+    }
+
+    .instruction {
+      min-height: 116px;
+      padding: 16px;
+      border: 1px solid rgba(229, 200, 121, .14);
+      border-radius: 14px;
+      background: rgba(255,255,255,.035);
+    }
+
+    .instruction-icon {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 12px;
+      border-radius: 10px;
+      background: rgba(199, 164, 90, .14);
+      color: var(--bright-gold);
+      font-weight: 900;
+    }
+
+    .instruction strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--cream);
+      font-size: 13px;
+    }
+
+    .instruction span {
+      display: block;
+      color: rgba(245, 236, 220, .56);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .welcome-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .primary-button, .secondary-button {
+      min-height: 52px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 22px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform .22s var(--ease-out), box-shadow .22s, background .22s, border-color .22s;
+    }
+
+    .primary-button {
+      border: 1px solid #f2d68d;
+      background: linear-gradient(135deg, #e5c879, #b98839);
+      color: #20140e;
+      font-weight: 900;
+      box-shadow: 0 12px 34px rgba(199, 164, 90, .2);
+    }
+
+    .secondary-button {
+      border: 1px solid rgba(229, 200, 121, .28);
+      background: rgba(255,255,255,.035);
+      color: var(--cream);
+      font-weight: 750;
+    }
+
+    .primary-button:hover, .secondary-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 36px rgba(0,0,0,.28);
+    }
+
+    .button-arrow { font-size: 20px; line-height: 1; }
+
+    .welcome-visual {
+      position: relative;
+      min-height: 520px;
+      overflow: hidden;
+      isolation: isolate;
+      background:
+        radial-gradient(circle at 50% 28%, rgba(229, 200, 121, .22), transparent 24%),
+        linear-gradient(180deg, #dfcbae 0 63%, #5a4034 63% 100%);
+      border-left: 1px solid rgba(229, 200, 121, .15);
+    }
+
+    .welcome-visual::before {
+      content: "";
+      position: absolute;
+      inset: 63% -20% -35%;
+      z-index: -1;
+      background:
+        repeating-linear-gradient(90deg, rgba(255,255,255,.12) 0 1px, transparent 1px 88px),
+        repeating-linear-gradient(0deg, rgba(255,255,255,.1) 0 1px, transparent 1px 76px),
+        linear-gradient(#604437, #2c211e);
+      transform: perspective(480px) rotateX(62deg) scale(1.7);
+      transform-origin: center top;
+    }
+
+    .welcome-visual::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      box-shadow: inset 24px 0 55px rgba(49, 31, 21, .24), inset 0 -20px 50px rgba(0,0,0,.35);
+    }
+
+    .preview-arch {
+      position: absolute;
+      inset: 7% 10% 18%;
+      border: 16px solid rgba(67, 43, 29, .7);
+      border-bottom-width: 22px;
+      border-radius: 46% 46% 4px 4px;
+      box-shadow: inset 0 0 0 2px rgba(229, 200, 121, .28), 0 24px 44px rgba(0,0,0,.23);
+    }
+
+    .preview-frame {
+      position: absolute;
+      padding: 10px;
+      background: linear-gradient(135deg, #7e5e31, #d4b66f 48%, #51391d);
+      box-shadow: 0 18px 28px rgba(0,0,0,.28), inset 0 0 0 2px rgba(255,255,255,.16);
+      animation: welcomeFloat 6s ease-in-out infinite;
+    }
+
+    .preview-frame::before {
+      content: "";
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 8px solid #eee2ce;
+      box-shadow: inset 0 0 18px rgba(0,0,0,.35);
+    }
+
+    .preview-frame.one {
+      width: 42%;
+      height: 30%;
+      left: 29%;
+      top: 22%;
+      transform: rotate(-2deg);
+    }
+
+    .preview-frame.one::before {
+      background:
+        radial-gradient(circle at 72% 30%, #f4d68a 0 10%, transparent 11%),
+        linear-gradient(145deg, transparent 32%, #9d7049 33% 41%, transparent 42%),
+        radial-gradient(ellipse at 30% 72%, #7fa07c 0 20%, transparent 21%),
+        linear-gradient(135deg, #183149, #94534c 56%, #d0a45e);
+    }
+
+    .preview-frame.two {
+      width: 28%;
+      height: 24%;
+      left: 8%;
+      top: 46%;
+      animation-delay: -2s;
+      transform: rotate(2deg);
+    }
+
+    .preview-frame.two::before {
+      background:
+        conic-gradient(from 45deg at 50% 50%, #18233d, #d0a44c, #741f3a, #e7dac0, #18233d);
+    }
+
+    .preview-frame.three {
+      width: 28%;
+      height: 24%;
+      right: 8%;
+      top: 46%;
+      animation-delay: -4s;
+      transform: rotate(-1deg);
+    }
+
+    .preview-frame.three::before {
+      background:
+        radial-gradient(circle at 48% 38%, #d4aa61 0 14%, transparent 15%),
+        linear-gradient(120deg, #273f3c, #101827 54%, #72263a);
+    }
+
+    .preview-plaque {
+      position: absolute;
+      left: 50%;
+      bottom: 9%;
+      transform: translateX(-50%);
+      width: max-content;
+      max-width: 80%;
+      padding: 10px 18px;
+      border: 1px solid rgba(229,200,121,.35);
+      border-radius: 999px;
+      background: rgba(26,18,13,.75);
+      color: #f4dfaa;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 13px;
+      letter-spacing: .08em;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+
+    @keyframes welcomeFloat {
+      0%, 100% { translate: 0 0; }
+      50% { translate: 0 -7px; }
+    }
+
+    /* ------------------------- Museum shell -------------------------- */
+
+    .museum-shell {
+      position: fixed;
+      inset: 0;
+      background: #090f18;
+      isolation: isolate;
+    }
+
+    .museum-viewport {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      perspective: 920px;
+      perspective-origin: 50% 48%;
+      background:
+        radial-gradient(ellipse at center 32%, rgba(233, 212, 170, .09), transparent 42%),
+        linear-gradient(#0b1420, #15100d);
+      outline: none;
+      touch-action: none;
+      user-select: none;
+    }
+
+    .museum-viewport::before {
+      content: "";
+      position: absolute;
+      z-index: 18;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse at 50% 45%, transparent 30%, rgba(3,7,13,.28) 78%, rgba(3,7,13,.64) 100%),
+        linear-gradient(180deg, rgba(3,7,13,.2), transparent 20%, transparent 72%, rgba(3,7,13,.48));
+    }
+
+    .museum-viewport::after {
+      content: "";
+      position: absolute;
+      z-index: 19;
+      inset: 0;
+      pointer-events: none;
+      opacity: .14;
+      background-image:
+        repeating-radial-gradient(circle at 30% 20%, rgba(255,255,255,.16) 0 1px, transparent 1px 5px);
+      mix-blend-mode: soft-light;
+    }
+
+    .camera-rig,
+    .world,
+    .architecture-layer,
+    .art-layer {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+      pointer-events: none;
+    }
+
+    .camera-rig {
+      z-index: 3;
+      will-change: transform;
+    }
+
+    .world {
+      will-change: transform;
+    }
+
+    /* Gallery surfaces are large 3D planes centered in the scene. */
+    .surface {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      backface-visibility: visible;
+      transform-style: preserve-3d;
+    }
+
+    .floor {
+      width: 1040px;
+      height: 5100px;
+      margin-left: -520px;
+      margin-top: -2550px;
+      transform: translate3d(0, 320px, -2220px) rotateX(90deg);
+      background-color: #33241f;
+      background-image:
+        radial-gradient(ellipse at 50% 12%, rgba(238, 214, 162, .15), transparent 18%),
+        radial-gradient(ellipse at 50% 36%, rgba(238, 214, 162, .11), transparent 15%),
+        radial-gradient(ellipse at 50% 64%, rgba(238, 214, 162, .08), transparent 15%),
+        repeating-linear-gradient(90deg, rgba(244, 227, 193, .14) 0 2px, transparent 2px 148px),
+        repeating-linear-gradient(0deg, rgba(244, 227, 193, .1) 0 2px, transparent 2px 216px),
+        linear-gradient(90deg, #2a1d19, #4a342b 50%, #2a1d19);
+      box-shadow: 0 0 70px rgba(0,0,0,.72) inset;
+    }
+
+    .floor::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 43%, rgba(255,240,203,.055) 50%, transparent 57%);
+      mix-blend-mode: screen;
+    }
+
+    .ceiling {
+      width: 1040px;
+      height: 5100px;
+      margin-left: -520px;
+      margin-top: -2550px;
+      transform: translate3d(0, -320px, -2220px) rotateX(90deg);
+      background:
+        repeating-linear-gradient(90deg, rgba(74,51,34,.17) 0 6px, transparent 6px 160px),
+        repeating-linear-gradient(0deg, rgba(74,51,34,.14) 0 6px, transparent 6px 720px),
+        linear-gradient(#d9c5a8, #efe5d3);
+      box-shadow: 0 0 70px rgba(51,32,19,.35) inset;
+    }
+
+    .wall {
+      width: 5100px;
+      height: 640px;
+      margin-left: -2550px;
+      margin-top: -320px;
+      background:
+        linear-gradient(180deg,
+          #eadcc3 0%,
+          #ddc9aa 66%,
+          #c4a67e 66.4%,
+          #f0dfc2 68%,
+          #9c7b57 69%,
+          #6d4a36 76%,
+          #3b271e 100%);
+      box-shadow:
+        inset 0 35px 58px rgba(74,48,28,.22),
+        inset 0 -28px 38px rgba(44,25,17,.36);
+    }
+
+    .wall::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(90deg, transparent 0 610px, rgba(111,78,49,.18) 611px 615px, transparent 616px 780px),
+        linear-gradient(180deg, rgba(255,255,255,.13), transparent 30%);
+      pointer-events: none;
+    }
+
+    .wall-left { transform: translate3d(-520px, 0, -2220px) rotateY(90deg); }
+    .wall-right { transform: translate3d(520px, 0, -2220px) rotateY(-90deg); }
+
+    .back-wall {
+      width: 1040px;
+      height: 640px;
+      margin-left: -520px;
+      margin-top: -320px;
+      transform: translate3d(0, 0, -4770px);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 38%, rgba(229,200,121,.28), transparent 23%),
+        linear-gradient(135deg, #4d1528, #701f35 52%, #32111d);
+      box-shadow: inset 0 0 110px rgba(0,0,0,.52);
+      border: 20px solid #3c251b;
+    }
+
+    .back-emblem {
+      width: 330px;
+      height: 330px;
+      display: grid;
+      place-items: center;
+      border: 2px solid rgba(229,200,121,.58);
+      border-radius: 50%;
+      color: #edd593;
+      text-align: center;
+      box-shadow: 0 0 0 14px rgba(229,200,121,.06), 0 0 70px rgba(229,200,121,.14);
+    }
+
+    .back-emblem span {
+      display: block;
+      font-size: 13px;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+    }
+
+    .back-emblem strong {
+      display: block;
+      margin: 12px 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 42px;
+      font-weight: 400;
+    }
+
+    .back-emblem small {
+      color: rgba(245,236,220,.7);
+      letter-spacing: .12em;
+    }
+
+    .portal {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 1040px;
+      height: 640px;
+      margin-left: -520px;
+      margin-top: -320px;
+      border: 14px solid rgba(57,36,25,.78);
+      border-bottom-width: 10px;
+      border-radius: 490px 490px 0 0;
+      box-shadow:
+        inset 0 0 0 2px rgba(229,200,121,.18),
+        0 0 34px rgba(0,0,0,.25);
+      pointer-events: none;
+      backface-visibility: visible;
+    }
+
+    .portal::after {
+      content: attr(data-section);
+      position: absolute;
+      left: 50%;
+      top: 24px;
+      translate: -50% 0;
+      padding: 7px 13px;
+      border: 1px solid rgba(229,200,121,.28);
+      border-radius: 999px;
+      background: rgba(45,27,20,.82);
+      color: #e7cf91;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 12px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .ceiling-light {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 310px;
+      height: 52px;
+      margin-left: -155px;
+      margin-top: -26px;
+      border-radius: 50%;
+      transform-style: preserve-3d;
+      background: radial-gradient(ellipse, #fff3c7 0%, #e8cf8c 28%, rgba(229,200,121,.16) 56%, transparent 72%);
+      filter: drop-shadow(0 0 22px rgba(255,225,154,.7));
+      opacity: .86;
+      pointer-events: none;
+    }
+
+    .bench {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 310px;
+      height: 84px;
+      margin-left: -155px;
+      margin-top: -42px;
+      pointer-events: none;
+      transform-style: preserve-3d;
+    }
+
+    .bench-seat {
+      position: absolute;
+      inset: 0;
+      border: 8px solid #281712;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #835044, #5a302a);
+      box-shadow: 0 18px 28px rgba(0,0,0,.32), inset 0 6px 12px rgba(255,255,255,.06);
+      transform: rotateX(72deg) translateZ(16px);
+    }
+
+    .bench-leg {
+      position: absolute;
+      bottom: -40px;
+      width: 18px;
+      height: 54px;
+      border-radius: 2px;
+      background: #281712;
+      box-shadow: 0 8px 10px rgba(0,0,0,.28);
+    }
+
+    .bench-leg.left { left: 52px; }
+    .bench-leg.right { right: 52px; }
+
+    /* --------------------------- Artwork ----------------------------- */
+
+    .artwork {
+      --x: 0px;
+      --y: -42px;
+      --z: -700px;
+      --ry: 0deg;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 292px;
+      height: 276px;
+      margin-left: -146px;
+      margin-top: -138px;
+      padding: 0;
+      border: 0;
+      color: var(--ink);
+      background: transparent;
+      cursor: pointer;
+      pointer-events: auto;
+      transform: translate3d(var(--x), var(--y), var(--z)) rotateY(var(--ry));
+      transform-style: preserve-3d;
+      backface-visibility: visible;
+      transition: filter .35s ease;
+    }
+
+    .artwork::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: -96px;
+      width: 330px;
+      height: 330px;
+      translate: -50% 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(255,236,179,.42), rgba(255,229,153,.12) 34%, transparent 70%);
+      clip-path: polygon(42% 0, 58% 0, 92% 100%, 8% 100%);
+      opacity: .38;
+      transition: opacity .35s ease, filter .35s ease;
+      pointer-events: none;
+      transform: translateZ(-5px);
+    }
+
+    .art-sconce {
+      position: absolute;
+      z-index: 2;
+      left: 50%;
+      top: -26px;
+      width: 70px;
+      height: 16px;
+      translate: -50% 0;
+      border: 2px solid #5b3c20;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, #fff0bd 0 18%, #d8b85e 42%, #68441f 74%);
+      box-shadow: 0 0 20px rgba(255,225,151,.62), 0 8px 12px rgba(0,0,0,.25);
+      transform: translateZ(15px);
+    }
+
+    .art-sconce::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 8px;
+      width: 8px;
+      height: 28px;
+      translate: -50% 0;
+      background: linear-gradient(#6e4b2b, #2d1b12);
+      border-radius: 4px 4px 0 0;
+    }
+
+    .art-frame {
+      position: relative;
+      z-index: 3;
+      display: block;
+      width: 274px;
+      margin: 0 auto;
+      padding: 12px;
+      border: 2px solid #39230f;
+      background:
+        linear-gradient(135deg, #553718 0%, #d2b56d 20%, #6b461e 42%, #e1c77d 58%, #513314 82%, #ad8848 100%);
+      box-shadow:
+        0 20px 28px rgba(0,0,0,.34),
+        0 0 0 2px rgba(229,200,121,.34),
+        inset 0 0 0 2px rgba(255,255,255,.16),
+        inset 0 0 12px rgba(0,0,0,.5);
+      transform: translateZ(12px);
+      transition: transform .36s var(--ease-out), box-shadow .36s ease;
+    }
+
+    .art-mat {
+      display: block;
+      padding: 10px;
+      border: 1px solid rgba(72,48,31,.22);
+      background: #efe4d0;
+      box-shadow: inset 0 0 17px rgba(68,43,26,.18);
+    }
+
+    .art-canvas {
+      position: relative;
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 11;
+      overflow: hidden;
+      background: #18202b;
+      box-shadow: inset 0 0 22px rgba(0,0,0,.48), 0 0 0 1px rgba(31,20,15,.4);
+    }
+
+    .art-canvas svg,
+    .modal-artwork svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .wall-label {
+      position: relative;
+      z-index: 4;
+      display: grid;
+      gap: 3px;
+      width: 214px;
+      min-height: 48px;
+      margin: 14px auto 0;
+      padding: 9px 12px;
+      border-left: 3px solid #b28b42;
+      background: #f4ecde;
+      color: #251b16;
+      box-shadow: 0 10px 18px rgba(0,0,0,.2);
+      text-align: left;
+      transform: translateZ(8px);
+    }
+
+    .wall-label strong {
+      overflow: hidden;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 13px;
+      line-height: 1.1;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .wall-label span {
+      overflow: hidden;
+      color: #6b5748;
+      font-size: 9px;
+      letter-spacing: .02em;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .viewed-seal {
+      position: absolute;
+      z-index: 5;
+      right: 2px;
+      bottom: 18px;
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #d9bb72;
+      border-radius: 50%;
+      background: #5e2030;
+      color: #f8e2a8;
+      font-size: 13px;
+      font-weight: 900;
+      opacity: 0;
+      transform: translateZ(18px) scale(.7);
+      transition: opacity .25s, transform .25s var(--ease-out);
+    }
+
+    .artwork.is-viewed .viewed-seal {
+      opacity: 1;
+      transform: translateZ(18px) scale(1);
+    }
+
+    .artwork:hover,
+    .artwork:focus-visible,
+    .artwork.is-selected,
+    .artwork.tour-highlight {
+      filter: brightness(1.08) saturate(1.06) drop-shadow(0 0 22px rgba(255,218,135,.42));
+      z-index: 5;
+    }
+
+    .artwork:hover::before,
+    .artwork:focus-visible::before,
+    .artwork.is-selected::before,
+    .artwork.tour-highlight::before {
+      opacity: .9;
+      filter: brightness(1.3);
+    }
+
+    .artwork:hover .art-frame,
+    .artwork:focus-visible .art-frame,
+    .artwork.is-selected .art-frame {
+      transform: translateZ(28px) scale(1.035);
+      box-shadow:
+        0 24px 38px rgba(0,0,0,.4),
+        0 0 0 3px rgba(229,200,121,.48),
+        0 0 38px rgba(255,221,143,.3),
+        inset 0 0 0 2px rgba(255,255,255,.18);
+    }
+
+    .artwork:focus-visible { outline: none; }
+
+    .artwork.tour-highlight .art-frame {
+      animation: tourPulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes tourPulse {
+      0%, 100% { transform: translateZ(25px) scale(1.025); box-shadow: 0 20px 38px rgba(0,0,0,.4), 0 0 0 3px rgba(229,200,121,.55), 0 0 22px rgba(255,224,145,.32); }
+      50% { transform: translateZ(34px) scale(1.06); box-shadow: 0 26px 44px rgba(0,0,0,.46), 0 0 0 4px rgba(255,225,151,.82), 0 0 48px rgba(255,224,145,.58); }
+    }
+
+    /* ------------------------ Ambient effects ------------------------ */
+
+    .ambient-light {
+      position: absolute;
+      z-index: 10;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse at calc(50% + var(--light-x, 0px)) calc(25% + var(--light-y, 0px)), rgba(250,226,171,.10), transparent 38%),
+        linear-gradient(115deg, transparent 24%, rgba(239,216,165,.035) 42%, transparent 56%);
+      mix-blend-mode: screen;
+    }
+
+    .dust-layer {
+      position: absolute;
+      z-index: 12;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .dust {
+      position: absolute;
+      left: var(--left);
+      top: var(--top);
+      width: var(--size);
+      height: var(--size);
+      border-radius: 50%;
+      background: rgba(255,236,194,.55);
+      box-shadow: 0 0 7px rgba(255,236,194,.45);
+      opacity: var(--opacity);
+      animation: dustFloat var(--duration) linear infinite;
+      animation-delay: var(--delay);
+    }
+
+    @keyframes dustFloat {
+      0% { transform: translate3d(0, 18px, 0) scale(.7); opacity: 0; }
+      18% { opacity: var(--opacity); }
+      82% { opacity: calc(var(--opacity) * .8); }
+      100% { transform: translate3d(var(--drift), -80px, 0) scale(1.15); opacity: 0; }
+    }
+
+    /* ------------------------------ HUD ------------------------------ */
+
+    .hud-layer {
+      position: absolute;
+      z-index: 30;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .hud-layer button,
+    .hud-layer [role="button"] { pointer-events: auto; }
+
+    .brand-card {
+      position: absolute;
+      top: 22px;
+      left: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px 10px 10px;
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      background: rgba(8,15,26,.72);
+      box-shadow: 0 14px 36px rgba(0,0,0,.24);
+      backdrop-filter: blur(14px);
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(229,200,121,.58);
+      border-radius: 50%;
+      color: var(--bright-gold);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 18px;
+    }
+
+    .brand-card strong {
+      display: block;
+      color: #f4e7d1;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: .04em;
+    }
+
+    .brand-card span {
+      display: block;
+      margin-top: 2px;
+      color: rgba(244,231,209,.48);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .section-chip {
+      position: absolute;
+      top: 24px;
+      left: 50%;
+      min-width: 230px;
+      padding: 10px 18px;
+      border: 1px solid rgba(229,200,121,.24);
+      border-radius: 999px;
+      background: rgba(8,15,26,.68);
+      color: rgba(245,236,220,.8);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .16em;
+      text-align: center;
+      text-transform: uppercase;
+      translate: -50% 0;
+      box-shadow: 0 12px 28px rgba(0,0,0,.2);
+      backdrop-filter: blur(12px);
+      transition: opacity .25s, transform .25s;
+    }
+
+    .section-chip.is-changing {
+      opacity: .25;
+      transform: translateY(-5px);
+    }
+
+    .minimap {
+      position: absolute;
+      top: 22px;
+      right: 24px;
+      width: 148px;
+      padding: 12px;
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
+      background: rgba(8,15,26,.74);
+      color: #f1e3cd;
+      box-shadow: 0 14px 36px rgba(0,0,0,.24);
+      backdrop-filter: blur(14px);
+      pointer-events: auto;
+    }
+
+    .minimap-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .minimap-head strong {
+      font-size: 10px;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .minimap-head span {
+      color: rgba(245,236,220,.42);
+      font-size: 9px;
+    }
+
+    .map-corridor {
+      position: relative;
+      width: 80px;
+      height: 154px;
+      margin: 0 auto 6px;
+      border: 1px solid rgba(229,200,121,.24);
+      border-radius: 38px 38px 10px 10px;
+      background:
+        repeating-linear-gradient(0deg, transparent 0 30px, rgba(229,200,121,.07) 30px 31px),
+        linear-gradient(90deg, rgba(104,31,50,.12), rgba(245,236,220,.05), rgba(95,113,95,.12));
+      box-shadow: inset 0 0 18px rgba(0,0,0,.34);
+      overflow: visible;
+    }
+
+    .map-corridor::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 8px;
+      bottom: 8px;
+      width: 1px;
+      background: linear-gradient(transparent, rgba(229,200,121,.35), transparent);
+    }
+
+    .map-label {
+      display: flex;
+      justify-content: space-between;
+      color: rgba(245,236,220,.36);
+      font-size: 8px;
+      text-transform: uppercase;
+    }
+
+    .map-dot {
+      position: absolute;
+      z-index: 2;
+      width: 16px;
+      height: 16px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      cursor: pointer;
+      translate: 0 50%;
+    }
+
+    .map-dot::before {
+      content: "";
+      position: absolute;
+      inset: 4px;
+      border-radius: 50%;
+      background: #d1b368;
+      box-shadow: 0 0 0 1px rgba(20,14,10,.65), 0 0 7px rgba(229,200,121,.38);
+      transition: transform .2s, background .2s, box-shadow .2s;
+    }
+
+    .map-dot.left { left: -6px; }
+    .map-dot.right { right: -6px; }
+    .map-dot:hover::before, .map-dot:focus-visible::before { transform: scale(1.55); }
+    .map-dot.is-viewed::before { background: #8aa17d; box-shadow: 0 0 0 1px #182016, 0 0 8px rgba(138,161,125,.6); }
+    .map-dot.is-active::before { transform: scale(1.7); background: #ffe29a; box-shadow: 0 0 12px #ffe29a; }
+
+    .visitor-marker {
+      position: absolute;
+      z-index: 4;
+      left: 50%;
+      bottom: 6px;
+      width: 22px;
+      height: 10px;
+      translate: -50% 50%;
+      transition: bottom .08s linear;
+    }
+
+    .visitor-marker::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 8px;
+      height: 8px;
+      border: 2px solid #0b1420;
+      border-radius: 50%;
+      background: #fff4cf;
+      box-shadow: 0 0 10px rgba(255,244,207,.9);
+      translate: -50% -50%;
+    }
+
+    .visitor-marker::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: -4px;
+      width: 0;
+      height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-bottom: 7px solid #fff4cf;
+      translate: -50% 0;
+    }
+
+    .progress-card {
+      position: absolute;
+      left: 24px;
+      bottom: 24px;
+      width: 208px;
+      padding: 12px 14px;
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      background: rgba(8,15,26,.75);
+      box-shadow: 0 14px 36px rgba(0,0,0,.24);
+      backdrop-filter: blur(14px);
+    }
+
+    .progress-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 9px;
+    }
+
+    .progress-top span {
+      color: rgba(245,236,220,.54);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .progress-top strong {
+      color: #f2d68d;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 17px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .progress-track {
+      height: 4px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: rgba(255,255,255,.1);
+    }
+
+    .progress-bar {
+      display: block;
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #8aa17d, #e1c579);
+      box-shadow: 0 0 10px rgba(225,197,121,.52);
+      transition: width .55s var(--ease-out);
+    }
+
+    .nav-controls {
+      position: absolute;
+      left: 50%;
+      bottom: 22px;
+      display: grid;
+      grid-template-columns: repeat(3, 66px);
+      grid-template-rows: repeat(2, 56px);
+      gap: 7px;
+      translate: -50% 0;
+      pointer-events: auto;
+    }
+
+    .move-button {
+      position: relative;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 1px solid rgba(229,200,121,.28);
+      border-radius: 15px;
+      background: rgba(8,15,26,.76);
+      color: #f3e5cf;
+      cursor: pointer;
+      box-shadow: 0 12px 24px rgba(0,0,0,.22), inset 0 1px rgba(255,255,255,.04);
+      backdrop-filter: blur(12px);
+      transition: transform .15s, background .15s, border-color .15s, box-shadow .15s;
+    }
+
+    .move-button.forward { grid-column: 2; grid-row: 1; }
+    .move-button.left { grid-column: 1; grid-row: 2; }
+    .move-button.back { grid-column: 2; grid-row: 2; }
+    .move-button.right { grid-column: 3; grid-row: 2; }
+
+    .move-button:hover,
+    .move-button.is-pressed {
+      transform: translateY(-2px);
+      border-color: rgba(255,226,154,.68);
+      background: rgba(69,45,30,.86);
+      box-shadow: 0 15px 28px rgba(0,0,0,.28), 0 0 18px rgba(229,200,121,.11);
+    }
+
+    .move-button .arrow {
+      display: block;
+      color: #f3d98e;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .move-button .key {
+      position: absolute;
+      right: 7px;
+      bottom: 5px;
+      color: rgba(245,236,220,.42);
+      font-size: 8px;
+      font-weight: 800;
+    }
+
+    .action-stack {
+      position: absolute;
+      right: 24px;
+      bottom: 24px;
+      display: grid;
+      gap: 8px;
+      width: 178px;
+      pointer-events: auto;
+    }
+
+    .hud-button {
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 0 14px;
+      border: 1px solid rgba(229,200,121,.28);
+      border-radius: 13px;
+      background: rgba(8,15,26,.76);
+      color: #f3e5cf;
+      cursor: pointer;
+      box-shadow: 0 12px 24px rgba(0,0,0,.22);
+      backdrop-filter: blur(12px);
+      font-size: 12px;
+      font-weight: 800;
+      transition: transform .2s, background .2s, border-color .2s;
+    }
+
+    .hud-button:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255,226,154,.62);
+      background: rgba(64,40,29,.86);
+    }
+
+    .hud-button.is-active {
+      border-color: rgba(255,226,154,.72);
+      background: linear-gradient(135deg, rgba(105,31,50,.92), rgba(70,45,27,.92));
+      color: #ffe7aa;
+    }
+
+    .hud-button-icon {
+      width: 22px;
+      height: 22px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(229,200,121,.26);
+      border-radius: 50%;
+      color: #edcf83;
+      font-size: 11px;
+    }
+
+    .hint-toast {
+      position: absolute;
+      z-index: 34;
+      left: 50%;
+      bottom: 150px;
+      max-width: min(520px, calc(100vw - 32px));
+      padding: 10px 16px;
+      border: 1px solid rgba(229,200,121,.28);
+      border-radius: 999px;
+      background: rgba(8,15,26,.86);
+      color: rgba(245,236,220,.85);
+      box-shadow: 0 14px 34px rgba(0,0,0,.28);
+      font-size: 12px;
+      text-align: center;
+      translate: -50% 14px;
+      opacity: 0;
+      pointer-events: none;
+      backdrop-filter: blur(12px);
+      transition: opacity .25s, translate .25s var(--ease-out);
+    }
+
+    .hint-toast.is-visible {
+      opacity: 1;
+      translate: -50% 0;
+    }
+
+    /* -------------------------- Guided tour -------------------------- */
+
+    .tour-panel {
+      position: absolute;
+      z-index: 38;
+      left: 50%;
+      bottom: 156px;
+      width: min(600px, calc(100vw - 36px));
+      padding: 16px 18px 14px;
+      border: 1px solid rgba(229,200,121,.38);
+      border-radius: 20px;
+      background: linear-gradient(145deg, rgba(14,20,31,.94), rgba(48,27,24,.93));
+      box-shadow: 0 24px 58px rgba(0,0,0,.4);
+      translate: -50% 0;
+      backdrop-filter: blur(18px);
+      pointer-events: auto;
+      animation: tourPanelIn .4s var(--ease-out) both;
+    }
+
+    @keyframes tourPanelIn {
+      from { transform: translateY(12px) scale(.98); }
+      to { transform: translateY(0) scale(1); }
+    }
+
+    .tour-panel-grid {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .tour-kicker {
+      margin: 0 0 4px;
+      color: #e1c477;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+
+    .tour-panel h2 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(20px, 2.5vw, 28px);
+      font-weight: 500;
+    }
+
+    .tour-byline {
+      margin: 4px 0 0;
+      color: rgba(245,236,220,.6);
+      font-size: 11px;
+    }
+
+    .tour-actions {
+      display: flex;
+      gap: 7px;
+    }
+
+    .tour-action {
+      min-height: 38px;
+      padding: 0 12px;
+      border: 1px solid rgba(229,200,121,.28);
+      border-radius: 11px;
+      background: rgba(255,255,255,.045);
+      color: #f5ead7;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 800;
+      transition: background .18s, transform .18s;
+    }
+
+    .tour-action:hover { background: rgba(229,200,121,.12); transform: translateY(-1px); }
+    .tour-action.primary { background: rgba(199,164,90,.18); color: #ffe3a1; }
+
+    .tour-timer {
+      height: 3px;
+      margin-top: 12px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: rgba(255,255,255,.08);
+    }
+
+    .tour-timer span {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, #8ba07d, #e8ca77);
+    }
+
+    .tour-timer.is-running span { animation: tourTimer 8s linear forwards; }
+    @keyframes tourTimer { from { width: 0; } to { width: 100%; } }
+
+    /* ----------------------------- Modal ----------------------------- */
+
+    .art-modal {
+      position: fixed;
+      z-index: 200;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: clamp(16px, 4vw, 48px);
+      background: rgba(3,7,13,.76);
+      backdrop-filter: blur(16px) saturate(.8);
+      opacity: 0;
+      transition: opacity .28s ease;
+    }
+
+    .art-modal.is-open { opacity: 1; }
+
+    .modal-dialog {
+      position: relative;
+      width: min(1120px, 100%);
+      max-height: min(840px, calc(100vh - 40px));
+      display: grid;
+      grid-template-columns: minmax(360px, .92fr) minmax(420px, 1.08fr);
+      overflow: hidden;
+      border: 1px solid rgba(229,200,121,.42);
+      border-radius: 28px;
+      background: linear-gradient(145deg, #141d2b, #2a1816 72%);
+      color: var(--cream);
+      box-shadow: 0 42px 120px rgba(0,0,0,.62), inset 0 1px rgba(255,255,255,.05);
+      transform: translateY(20px) scale(.97);
+      transition: transform .36s var(--ease-out);
+    }
+
+    .art-modal.is-open .modal-dialog { transform: translateY(0) scale(1); }
+
+    .modal-close {
+      position: absolute;
+      z-index: 5;
+      top: 15px;
+      right: 15px;
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 1px solid rgba(229,200,121,.32);
+      border-radius: 50%;
+      background: rgba(7,12,19,.72);
+      color: #f6e8d0;
+      cursor: pointer;
+      font-size: 22px;
+      line-height: 1;
+      backdrop-filter: blur(10px);
+      transition: transform .2s, background .2s;
+    }
+
+    .modal-close:hover { transform: rotate(6deg) scale(1.05); background: rgba(104,31,50,.9); }
+
+    .modal-visual {
+      position: relative;
+      min-height: 560px;
+      display: grid;
+      place-items: center;
+      padding: 76px 46px 52px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 34%, rgba(255,225,153,.17), transparent 28%),
+        linear-gradient(180deg, #ddc7a7 0 68%, #50362e 68% 100%);
+    }
+
+    .modal-visual::before {
+      content: "";
+      position: absolute;
+      inset: 68% -20% -35%;
+      background:
+        repeating-linear-gradient(90deg, rgba(255,255,255,.12) 0 1px, transparent 1px 100px),
+        repeating-linear-gradient(0deg, rgba(255,255,255,.1) 0 1px, transparent 1px 86px),
+        linear-gradient(#5b4036, #291d1b);
+      transform: perspective(480px) rotateX(62deg) scale(1.8);
+      transform-origin: center top;
+    }
+
+    .modal-visual::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      box-shadow: inset 0 0 70px rgba(49,31,20,.34), inset 0 -34px 50px rgba(0,0,0,.25);
+    }
+
+    .modal-frame {
+      position: relative;
+      z-index: 2;
+      width: min(100%, 500px);
+      padding: clamp(14px, 2vw, 22px);
+      border: 3px solid #3a240f;
+      background: linear-gradient(135deg, #5c3a18, #e0c378 23%, #69441d 47%, #d8b667 71%, #4f3013);
+      box-shadow: 0 34px 58px rgba(0,0,0,.42), 0 0 0 3px rgba(229,200,121,.3), inset 0 0 16px rgba(0,0,0,.5);
+      animation: modalArtworkIn .7s var(--ease-out) both;
+    }
+
+    @keyframes modalArtworkIn {
+      from { transform: translateY(20px) scale(.82); }
+      to { transform: translateY(0) scale(1); }
+    }
+
+    .modal-mat {
+      padding: clamp(12px, 2vw, 20px);
+      background: #efe4d0;
+      box-shadow: inset 0 0 24px rgba(58,37,22,.2);
+    }
+
+    .modal-artwork {
+      width: 100%;
+      aspect-ratio: 16 / 11;
+      overflow: hidden;
+      background: #151b24;
+      box-shadow: inset 0 0 34px rgba(0,0,0,.48), 0 0 0 1px rgba(33,20,13,.5);
+    }
+
+    .modal-room-label {
+      position: relative;
+      z-index: 2;
+      width: min(82%, 310px);
+      margin-top: 24px;
+      padding: 11px 15px;
+      border-left: 4px solid #b18840;
+      background: #f3eadc;
+      color: #30221a;
+      box-shadow: 0 12px 20px rgba(0,0,0,.25);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .modal-content {
+      min-height: 0;
+      overflow: auto;
+      padding: clamp(34px, 4vw, 62px) clamp(30px, 5vw, 70px) 34px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(229,200,121,.45) transparent;
+    }
+
+    .modal-index {
+      margin: 0 0 10px;
+      color: #e1c477;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    .modal-content h2 {
+      margin: 0;
+      max-width: 650px;
+      color: #f7ead4;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(36px, 4.5vw, 62px);
+      font-weight: 400;
+      line-height: .98;
+      letter-spacing: -.035em;
+      text-wrap: balance;
+    }
+
+    .modal-content h2:focus { outline: none; }
+
+    .modal-artist {
+      margin: 14px 0 0;
+      color: rgba(245,236,220,.72);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 19px;
+      font-style: italic;
+    }
+
+    .metadata-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 22px 0 26px;
+    }
+
+    .metadata-chip {
+      padding: 7px 10px;
+      border: 1px solid rgba(229,200,121,.2);
+      border-radius: 999px;
+      background: rgba(255,255,255,.035);
+      color: rgba(245,236,220,.68);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+
+    .detail-section {
+      margin-top: 22px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(229,200,121,.13);
+    }
+
+    .detail-section h3 {
+      margin: 0 0 8px;
+      color: #ebce85;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .detail-section p {
+      margin: 0;
+      color: rgba(245,236,220,.72);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 16px;
+      line-height: 1.68;
+    }
+
+    .curator-note {
+      position: relative;
+      margin-top: 24px;
+      padding: 20px 22px 20px 24px;
+      border: 1px solid rgba(229,200,121,.2);
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(104,31,50,.16), rgba(95,113,95,.08));
+    }
+
+    .curator-note::before {
+      content: "“";
+      position: absolute;
+      top: 4px;
+      right: 18px;
+      color: rgba(229,200,121,.16);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 78px;
+      line-height: 1;
+    }
+
+    .curator-note h3 {
+      margin: 0 0 8px;
+      color: #f0d58f;
+      font-size: 10px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .curator-note p {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      color: rgba(245,236,220,.78);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 15px;
+      font-style: italic;
+      line-height: 1.62;
+    }
+
+    .modal-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(229,200,121,.13);
+    }
+
+    .modal-nav button {
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 14px;
+      border: 1px solid rgba(229,200,121,.25);
+      border-radius: 12px;
+      background: rgba(255,255,255,.035);
+      color: #f3e6d1;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 800;
+      transition: background .2s, transform .2s;
+    }
+
+    .modal-nav button:hover { background: rgba(229,200,121,.12); transform: translateY(-1px); }
+
+    /* -------------------------- Responsiveness ----------------------- */
+
+    @media (max-width: 1050px) {
+      .welcome-card { grid-template-columns: 1fr; }
+      .welcome-visual { display: none; }
+      .welcome-copy { padding: 44px; }
+      .modal-dialog { grid-template-columns: .9fr 1.1fr; }
+      .modal-visual { padding-inline: 28px; }
+      .progress-card { width: 178px; }
+      .action-stack { width: 154px; }
+    }
+
+    @media (max-width: 820px) {
+      .brand-card span, .section-chip, .minimap { display: none; }
+      .brand-card { top: 14px; left: 14px; }
+      .progress-card { left: 14px; bottom: 14px; width: 152px; }
+      .action-stack { right: 14px; bottom: 14px; width: 145px; }
+      .nav-controls { bottom: 12px; grid-template-columns: repeat(3, 54px); grid-template-rows: repeat(2, 48px); }
+      .tour-panel { bottom: 124px; }
+      .modal-dialog { display: block; overflow: auto; max-height: calc(100vh - 24px); }
+      .modal-visual { min-height: 390px; padding: 68px 34px 38px; }
+      .modal-content { overflow: visible; padding-top: 34px; }
+      .modal-close { position: fixed; top: 22px; right: 22px; }
+    }
+
+    @media (max-width: 620px) {
+      .welcome-screen { padding: 12px; }
+      .welcome-card { border-radius: 22px; min-height: auto; }
+      .welcome-copy { padding: 30px 24px; }
+      .welcome-copy h1 { font-size: clamp(45px, 15vw, 68px); }
+      .instruction-list { grid-template-columns: 1fr; margin: 24px 0; }
+      .instruction { min-height: 0; display: grid; grid-template-columns: 34px 1fr; column-gap: 12px; }
+      .instruction-icon { grid-row: 1 / 3; margin: 0; }
+      .instruction strong, .instruction span { grid-column: 2; }
+      .welcome-actions { display: grid; }
+      .primary-button, .secondary-button { width: 100%; }
+      .brand-card { display: none; }
+      .progress-card { top: 14px; bottom: auto; width: 112px; padding: 10px; }
+      .progress-top span { display: none; }
+      .progress-top { justify-content: center; margin-bottom: 6px; }
+      .action-stack { top: 14px; bottom: auto; width: 124px; }
+      .hud-button { padding: 0 9px; font-size: 10px; }
+      .hud-button-icon { display: none; }
+      .nav-controls { bottom: 12px; grid-template-columns: repeat(3, 48px); grid-template-rows: repeat(2, 44px); }
+      .move-button .key { display: none; }
+      .tour-panel { bottom: 114px; padding: 14px; }
+      .tour-panel-grid { grid-template-columns: 1fr; }
+      .tour-actions { flex-wrap: wrap; }
+      .tour-action { flex: 1; }
+      .hint-toast { bottom: 122px; }
+      .art-modal { padding: 8px; }
+      .modal-visual { min-height: 330px; padding: 62px 24px 28px; }
+      .modal-content { padding: 30px 22px; }
+      .modal-content h2 { font-size: 39px; }
+      .modal-nav { flex-direction: column; }
+      .modal-nav button { justify-content: center; }
+    }
+
+    @media (max-height: 740px) and (min-width: 821px) {
+      .welcome-card { min-height: calc(100vh - 28px); }
+      .welcome-copy { padding-block: 30px; }
+      .welcome-copy h1 { font-size: clamp(46px, 6vw, 70px); }
+      .welcome-lede { margin-top: 16px; font-size: 17px; }
+      .instruction-list { margin: 22px 0; }
+      .instruction { min-height: 94px; padding: 12px; }
+      .instruction-icon { margin-bottom: 7px; }
+      .minimap { transform: scale(.9); transform-origin: top right; }
+      .tour-panel { bottom: 134px; }
+      .modal-dialog { max-height: calc(100vh - 24px); }
+      .modal-visual { min-height: 500px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+      }
+      .dust-layer { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#museumViewport">Skip to gallery</a>
+
+  <!-- Welcome / hero screen -->
+  <section class="welcome-screen" id="welcomeScreen" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
+    <div class="welcome-card">
+      <div class="welcome-copy">
+        <p class="eyebrow">The Aurelia Collection · Private View</p>
+        <h1 id="welcomeTitle">Virtual <em>Art Museum</em></h1>
+        <p class="welcome-lede">Walk through an intimate digital gallery of eight original works. Follow the light, pause at each frame, and uncover the story behind every canvas.</p>
+
+        <div class="instruction-list" aria-label="Gallery instructions">
+          <div class="instruction">
+            <span class="instruction-icon" aria-hidden="true">↕</span>
+            <strong>Walk the gallery</strong>
+            <span>Use arrow keys, W A S D, or the on-screen controls.</span>
+          </div>
+          <div class="instruction">
+            <span class="instruction-icon" aria-hidden="true">◎</span>
+            <strong>Open an artwork</strong>
+            <span>Click or focus a painting and press Enter for its full story.</span>
+          </div>
+          <div class="instruction">
+            <span class="instruction-icon" aria-hidden="true">Esc</span>
+            <strong>Return to the room</strong>
+            <span>Press Escape or use the close button to leave artwork details.</span>
+          </div>
+        </div>
+
+        <div class="welcome-actions">
+          <button class="primary-button" id="enterGallery" type="button">
+            Enter the gallery <span class="button-arrow" aria-hidden="true">→</span>
+          </button>
+          <button class="secondary-button" id="welcomeTour" type="button">Begin with the curator’s tour</button>
+        </div>
+      </div>
+
+      <div class="welcome-visual" aria-hidden="true">
+        <div class="preview-arch"></div>
+        <div class="preview-frame one"></div>
+        <div class="preview-frame two"></div>
+        <div class="preview-frame three"></div>
+        <div class="preview-plaque">Eight works · Four movements · One continuous gallery</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main museum experience -->
+  <div class="museum-shell" id="museumShell" aria-hidden="true" inert>
+    <main class="museum-viewport" id="museumViewport" tabindex="0" aria-label="Interactive virtual art gallery. Use arrow keys or W A S D to move and activate paintings for details.">
+      <div class="ambient-light" id="ambientLight" aria-hidden="true"></div>
+      <div class="dust-layer" id="dustLayer" aria-hidden="true"></div>
+
+      <div class="camera-rig" id="cameraRig">
+        <div class="world" id="world">
+          <!-- Fixed architectural planes -->
+          <div class="surface floor"></div>
+          <div class="surface ceiling"></div>
+          <div class="surface wall wall-left"></div>
+          <div class="surface wall wall-right"></div>
+          <div class="surface back-wall">
+            <div class="back-emblem">
+              <div>
+                <span>The Aurelia</span>
+                <strong>Collection</strong>
+                <small>LIGHT · MEMORY · FORM</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="architecture-layer" id="architectureLayer"></div>
+          <div class="art-layer" id="artLayer"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Non-diegetic controls and status -->
+    <div class="hud-layer">
+      <div class="brand-card" aria-label="Museum identity">
+        <div class="brand-mark" aria-hidden="true">A</div>
+        <div>
+          <strong>Aurelia Museum</strong>
+          <span>Digital collection · Gallery I</span>
+        </div>
+      </div>
+
+      <div class="section-chip" id="sectionChip" aria-live="polite">Entrance · Orientation Hall</div>
+
+      <aside class="minimap" aria-label="Gallery mini-map">
+        <div class="minimap-head"><strong>Floor plan</strong><span id="mapPosition">0 m</span></div>
+        <div class="map-corridor" id="mapCorridor">
+          <div id="mapArtLayer"></div>
+          <div class="visitor-marker" id="visitorMarker" aria-label="Your position"></div>
+        </div>
+        <div class="map-label"><span>Exit</span><span>Entrance</span></div>
+      </aside>
+
+      <section class="progress-card" aria-label="Artwork viewing progress">
+        <div class="progress-top">
+          <span>Collection viewed</span>
+          <strong id="progressText">0 / 8</strong>
+        </div>
+        <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="8" aria-valuenow="0" aria-label="Paintings viewed">
+          <span class="progress-bar" id="progressBar"></span>
+        </div>
+      </section>
+
+      <div class="nav-controls" role="group" aria-label="Gallery movement controls">
+        <button class="move-button forward" type="button" data-move="forward" aria-label="Move forward">
+          <span class="arrow" aria-hidden="true">▲</span><span class="key">W / ↑</span>
+        </button>
+        <button class="move-button left" type="button" data-move="left" aria-label="Move left">
+          <span class="arrow" aria-hidden="true">◀</span><span class="key">A / ←</span>
+        </button>
+        <button class="move-button back" type="button" data-move="back" aria-label="Move backward">
+          <span class="arrow" aria-hidden="true">▼</span><span class="key">S / ↓</span>
+        </button>
+        <button class="move-button right" type="button" data-move="right" aria-label="Move right">
+          <span class="arrow" aria-hidden="true">▶</span><span class="key">D / →</span>
+        </button>
+      </div>
+
+      <div class="action-stack">
+        <button class="hud-button" id="tourButton" type="button">
+          <span class="hud-button-icon" aria-hidden="true">✦</span><span>Guided tour</span>
+        </button>
+        <button class="hud-button" id="resetButton" type="button">
+          <span class="hud-button-icon" aria-hidden="true">↺</span><span>Reset view</span>
+        </button>
+      </div>
+
+      <section class="tour-panel" id="tourPanel" aria-label="Guided tour controls" hidden>
+        <div class="tour-panel-grid">
+          <div>
+            <p class="tour-kicker" id="tourKicker">Stop 1 of 8</p>
+            <h2 id="tourTitle">Artwork title</h2>
+            <p class="tour-byline" id="tourByline">Artist · year · style</p>
+          </div>
+          <div class="tour-actions">
+            <button class="tour-action primary" id="tourDetails" type="button">View details</button>
+            <button class="tour-action" id="tourPause" type="button">Pause</button>
+            <button class="tour-action" id="tourNext" type="button">Next</button>
+            <button class="tour-action" id="tourEnd" type="button">End</button>
+          </div>
+        </div>
+        <div class="tour-timer" id="tourTimer" aria-hidden="true"><span></span></div>
+      </section>
+
+      <div class="hint-toast" id="hintToast" role="status" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <!-- Accessible artwork-details modal -->
+  <div class="art-modal" id="artModal" hidden>
+    <article class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" id="modalClose" type="button" aria-label="Close artwork details">×</button>
+
+      <div class="modal-visual">
+        <div class="modal-frame" id="modalFrame">
+          <div class="modal-mat">
+            <div class="modal-artwork" id="modalArtwork" aria-hidden="true"></div>
+          </div>
+        </div>
+        <div class="modal-room-label" id="modalRoomLabel"></div>
+      </div>
+
+      <div class="modal-content" id="modalContent">
+        <p class="modal-index" id="modalIndex">Gallery work 01 / 08</p>
+        <h2 id="modalTitle" tabindex="-1"></h2>
+        <p class="modal-artist" id="modalArtist"></p>
+        <div class="metadata-row" id="metadataRow"></div>
+
+        <section class="detail-section">
+          <h3>Description</h3>
+          <p id="modalDescription"></p>
+        </section>
+        <section class="detail-section">
+          <h3>Meaning and interpretation</h3>
+          <p id="modalMeaning"></p>
+        </section>
+        <section class="detail-section">
+          <h3>Interesting fact</h3>
+          <p id="modalFact"></p>
+        </section>
+        <aside class="curator-note">
+          <h3>Curator’s note</h3>
+          <p id="modalCurator"></p>
+        </aside>
+
+        <div class="modal-nav" aria-label="Browse artworks">
+          <button id="modalPrevious" type="button"><span aria-hidden="true">←</span> Previous work</button>
+          <button id="modalNext" type="button">Next work <span aria-hidden="true">→</span></button>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <div class="sr-only" id="announcer" aria-live="polite" aria-atomic="true"></div>
+
+  <script>
+    /* ================================================================
+       ARTWORK COLLECTION
+       Every image is an original inline SVG generated in this file.
+       ================================================================ */
+
+    const artworkData = [
+      {
+        id: "nocturne-cobalt",
+        title: "Nocturne in Cobalt",
+        artist: "Mira Sen",
+        year: "2024",
+        style: "Abstract Expressionism",
+        movement: "Luminous Abstraction",
+        side: "left",
+        z: -680,
+        description: "Broad fields of midnight blue are interrupted by a molten gold path and small, floating marks that resemble notes suspended in air. The composition feels calm at first, then increasingly restless as the eye follows the curved line through the dark.",
+        meaning: "The work treats memory as a night landscape: mostly unknowable, yet briefly illuminated by intense fragments. The gold line can be read as a remembered voice, a route home, or the pulse of attention moving through uncertainty.",
+        fact: "Sen built the digital study from only seven base shapes, repeatedly stretching and layering them until they appeared hand-painted.",
+        curator: "Stand slightly to the right of the frame. The gold curve becomes less like a river and more like a question mark — an intentional ambiguity at the heart of the work.",
+        render: uid => `
+          <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="n-bg-${uid}" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#071426"/><stop offset=".48" stop-color="#153a63"/><stop offset="1" stop-color="#4c203c"/>
+              </linearGradient>
+              <radialGradient id="n-moon-${uid}" cx="70%" cy="27%" r="46%">
+                <stop offset="0" stop-color="#f7dda0"/><stop offset=".28" stop-color="#d5a958"/><stop offset="1" stop-color="#d5a958" stop-opacity="0"/>
+              </radialGradient>
+              <linearGradient id="n-gold-${uid}" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stop-color="#8b5c25"/><stop offset=".45" stop-color="#f1d37d"/><stop offset="1" stop-color="#ad7130"/>
+              </linearGradient>
+            </defs>
+            <rect width="320" height="220" fill="url(#n-bg-${uid})"/>
+            <circle cx="236" cy="56" r="68" fill="url(#n-moon-${uid})" opacity=".78"/>
+            <path d="M-10 168 C45 122 88 199 146 145 C198 98 236 118 338 41" fill="none" stroke="url(#n-gold-${uid})" stroke-width="18" stroke-linecap="round" opacity=".88"/>
+            <path d="M-6 178 C54 138 96 207 155 154 C211 105 248 125 334 55" fill="none" stroke="#fff0b3" stroke-width="2.2" stroke-linecap="round" opacity=".72"/>
+            <path d="M0 79 C55 51 95 72 135 43 S232 20 320 56" fill="none" stroke="#91c7cf" stroke-width="3" opacity=".22"/>
+            <path d="M17 105 C78 84 111 114 166 83 S265 63 318 91" fill="none" stroke="#b9e1df" stroke-width="1.5" opacity=".18"/>
+            <g fill="#f6d98c">
+              <circle cx="58" cy="58" r="3.5"/><circle cx="82" cy="83" r="2"/><circle cx="119" cy="52" r="2.8"/>
+              <circle cx="174" cy="69" r="2.2"/><circle cx="208" cy="34" r="1.8"/><circle cx="279" cy="91" r="3"/>
+            </g>
+            <g fill="#9bcbd0" opacity=".7">
+              <rect x="35" y="126" width="18" height="3" rx="1.5" transform="rotate(-18 35 126)"/>
+              <rect x="106" y="183" width="24" height="3" rx="1.5" transform="rotate(8 106 183)"/>
+              <rect x="244" y="151" width="20" height="3" rx="1.5" transform="rotate(-25 244 151)"/>
+            </g>
+            <rect x="7" y="7" width="306" height="206" fill="none" stroke="#e9d59d" stroke-opacity=".18"/>
+          </svg>`
+      },
+      {
+        id: "orchard-first-light",
+        title: "Orchard at First Light",
+        artist: "Elian Voss",
+        year: "1898",
+        style: "Neo-Impressionism",
+        movement: "Light and Atmosphere",
+        side: "right",
+        z: -1080,
+        description: "A low sunrise washes an orchard in peach, sage, and lavender. Rather than describing individual leaves, the artist builds the scene from clustered flecks, allowing the eye to mix color at a distance.",
+        meaning: "The orchard is less a specific place than a threshold between sleep and waking. Its unfinished edges suggest that perception forms gradually, as light gives shape to what was already present in darkness.",
+        fact: "The original study was imagined as a sequence of 312 colored dabs; this digital interpretation preserves that pointillist rhythm without using any external image.",
+        curator: "Notice how the warmest color sits near the horizon rather than inside the sun. Voss makes the surrounding air — not the object — carry the emotional weight.",
+        render: uid => `
+          <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="o-sky-${uid}" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#879eb6"/><stop offset=".58" stop-color="#e5b79f"/><stop offset="1" stop-color="#f1cd8e"/>
+              </linearGradient>
+              <linearGradient id="o-field-${uid}" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#7b8d69"/><stop offset="1" stop-color="#394d3f"/>
+              </linearGradient>
+            </defs>
+            <rect width="320" height="132" fill="url(#o-sky-${uid})"/>
+            <rect y="132" width="320" height="88" fill="url(#o-field-${uid})"/>
+            <circle cx="242" cy="91" r="26" fill="#f5d99a" opacity=".88"/>
+            <path d="M0 145 Q62 118 126 137 T250 131 T320 139 V220 H0Z" fill="#60745a"/>
+            <path d="M0 168 Q64 138 132 160 T264 151 T320 158 V220 H0Z" fill="#405746" opacity=".9"/>
+            <g stroke="#5d4433" stroke-width="5" stroke-linecap="round">
+              <path d="M62 174 Q64 135 70 98"/><path d="M142 173 Q140 132 149 88"/><path d="M230 171 Q226 135 236 102"/>
+            </g>
+            <g stroke="#5d4433" stroke-width="2.4" stroke-linecap="round">
+              <path d="M69 119 Q48 99 34 104 M68 122 Q86 99 105 102"/>
+              <path d="M148 112 Q124 89 108 94 M148 106 Q168 82 190 90"/>
+              <path d="M235 124 Q213 104 198 109 M235 119 Q252 98 274 104"/>
+            </g>
+            <g opacity=".96">
+              ${[44,58,72,84,96,113,126,138,151,165,179,197,211,225,240,254,269,282].map((x,i)=>`<circle cx="${x}" cy="${86 + (i%4)*12}" r="${5+(i%3)}" fill="${['#71845f','#8d9d70','#d09c75','#e4b889'][i%4]}"/>`).join('')}
+              ${[36,51,69,88,105,122,141,159,178,198,219,239,261,281].map((x,i)=>`<circle cx="${x}" cy="${132 + (i%3)*10}" r="${3+(i%2)}" fill="${['#d9b578','#9b6f57','#6f875f'][i%3]}" opacity=".9"/>`).join('')}
+            </g>
+            <g fill="#f2dca3" opacity=".72">
+              <circle cx="20" cy="66" r="2"/><circle cx="107" cy="53" r="2.5"/><circle cx="181" cy="72" r="2"/><circle cx="291" cy="58" r="2.5"/>
+            </g>
+            <path d="M0 205 C76 187 157 218 320 180" fill="none" stroke="#d4b77b" stroke-width="3" opacity=".45"/>
+          </svg>`
+      },
+      {
+        id: "quiet-geometry",
+        title: "The Quiet Geometry",
+        artist: "Amara Okeke",
+        year: "1967",
+        style: "Geometric Modernism",
+        movement: "Form and Measure",
+        side: "left",
+        z: -1580,
+        description: "Burgundy planes, cream intervals, and a single dark circle form a restrained architecture. The shapes appear precisely ordered, yet small misalignments keep the arrangement human and slightly unsettled.",
+        meaning: "Okeke uses geometry as a metaphor for social systems: elegant from a distance, imperfect in lived experience. The off-center circle introduces an individual presence that cannot be fully absorbed by the surrounding grid.",
+        fact: "Every major edge follows a ratio derived from 3, 5, or 8, but the central circle is deliberately positioned outside that sequence.",
+        curator: "The painting rewards slow looking. Follow the cream line from lower left to upper right; it behaves like a corridor, quietly connecting otherwise separate blocks.",
+        render: uid => `
+          <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="g-bg-${uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#efe3cf"/><stop offset="1" stop-color="#cdb893"/></linearGradient>
+              <linearGradient id="g-gold-${uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e2c36f"/><stop offset="1" stop-color="#9a7133"/></linearGradient>
+            </defs>
+            <rect width="320" height="220" fill="url(#g-bg-${uid})"/>
+            <rect x="0" y="0" width="116" height="86" fill="#6c1f34"/>
+            <rect x="203" y="0" width="117" height="124" fill="#142238"/>
+            <rect x="0" y="148" width="156" height="72" fill="#475c4e"/>
+            <rect x="188" y="150" width="132" height="70" fill="#7a283b"/>
+            <polygon points="118,0 203,0 169,97 91,129" fill="url(#g-gold-${uid})"/>
+            <polygon points="155,94 217,126 176,187 119,151" fill="#e9dec9" stroke="#5a3925" stroke-width="3"/>
+            <circle cx="205" cy="128" r="31" fill="#191716"/>
+            <circle cx="205" cy="128" r="17" fill="#c7a65b"/>
+            <circle cx="205" cy="128" r="7" fill="#6b2135"/>
+            <path d="M16 190 L294 24" stroke="#f2e8d6" stroke-width="8" opacity=".88"/>
+            <path d="M22 194 L298 28" stroke="#36251c" stroke-width="1.5" opacity=".7"/>
+            <g fill="none" stroke="#3d2a20" stroke-width="2" opacity=".58">
+              <rect x="22" y="20" width="72" height="48"/><rect x="227" y="26" width="67" height="71"/><rect x="24" y="165" width="101" height="37"/>
+            </g>
+            <rect x="8" y="8" width="304" height="204" fill="none" stroke="#2d211a" stroke-width="2" opacity=".45"/>
+          </svg>`
+      },
+      {
+        id: "keeper-ember",
+        title: "Keeper of the Ember",
+        artist: "Lucía Ferrer",
+        year: "1932",
+        style: "Symbolist Portraiture",
+        movement: "Figure and Memory",
+        side: "right",
+        z: -1990,
+        description: "A half-seen figure emerges from a burgundy field, holding a small source of light near the chest. The face is assembled from profile and frontal views at once, giving the sitter an icon-like stillness.",
+        meaning: "The ember represents a private conviction protected through difficult circumstances. Ferrer avoids a heroic pose; endurance appears instead as careful, almost ordinary attention to something fragile.",
+        fact: "The face is constructed from two overlapping silhouettes with no conventional outline around the nose or jaw.",
+        curator: "Look at the hands before the face. Their protective curve establishes the emotional action of the portrait; the sitter’s expression merely confirms it.",
+        render: uid => `
+          <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <radialGradient id="k-halo-${uid}" cx="50%" cy="44%" r="56%"><stop offset="0" stop-color="#e6c979"/><stop offset=".35" stop-color="#a56d36" stop-opacity=".6"/><stop offset="1" stop-color="#5d1d31" stop-opacity="0"/></radialGradient>
+              <linearGradient id="k-face-${uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ddae7a"/><stop offset="1" stop-color="#8e513b"/></linearGradient>
+            </defs>
+            <rect width="320" height="220" fill="#641f34"/>
+            <circle cx="164" cy="100" r="104" fill="url(#k-halo-${uid})"/>
+            <path d="M55 220 Q69 147 104 126 Q121 115 126 84 Q130 40 164 28 Q205 39 213 79 Q218 103 204 129 Q248 150 267 220Z" fill="#1a2230"/>
+            <path d="M128 52 Q152 25 181 43 Q205 59 196 91 Q187 119 162 132 Q139 119 127 91 Q119 70 128 52Z" fill="url(#k-face-${uid})"/>
+            <path d="M163 39 Q181 58 176 81 Q172 101 159 122 Q142 110 132 91 Q122 71 131 55 Q142 40 163 39Z" fill="#c98e65" opacity=".86"/>
+            <path d="M161 58 Q159 82 151 97" fill="none" stroke="#543128" stroke-width="3" stroke-linecap="round"/>
+            <path d="M139 74 Q148 68 155 75 M171 74 Q181 68 188 76" fill="none" stroke="#40261f" stroke-width="2"/>
+            <circle cx="149" cy="75" r="2" fill="#1d1716"/><circle cx="179" cy="75" r="2" fill="#1d1716"/>
+            <path d="M151 106 Q163 112 176 104" fill="none" stroke="#63352f" stroke-width="2"/>
+            <path d="M109 175 Q137 143 160 174 Q185 143 216 178" fill="none" stroke="#c18d66" stroke-width="12" stroke-linecap="round"/>
+            <circle cx="163" cy="168" r="25" fill="#e0a64c" opacity=".18"/>
+            <circle cx="163" cy="168" r="14" fill="#f0c868"/>
+            <circle cx="163" cy="168" r="7" fill="#fff1b7"/>
+            <path d="M104 124 Q77 78 91 31 M219 125 Q249 76 237 30" fill="none" stroke="#d5b565" stroke-width="3" opacity=".55"/>
+            <g fill="#d9bc73" opacity=".7"><circle cx="75" cy="52" r="3"/><circle cx="247" cy="60" r="3"/><circle cx="68" cy="98" r="2"/><circle cx="256" cy="109" r="2"/></g>
+          </svg>`
+      },
+      {
+        id: "tide-above-city",
+        title: "Tide Above the City",
+        artist: "Kenji Arata",
+        year: "1986",
+        style: "Surrealism",
+        movement: "Dream and Displacement",
+        side: "left",
+        z: -2520,
+        description: "A nocturnal city rises beneath an ocean suspended in the sky. Fish pass over rooftops while a white moon appears both above and below the imagined waterline.",
+        meaning: "The impossible tide collapses the boundary between collective life and private dream. The city’s rigid verticals are placed under a fluid world that cannot be zoned, owned, or made predictable.",
+        fact: "The skyline contains no repeated building silhouette, while every wave curve is duplicated somewhere else in the painting at a different scale.",
+        curator: "The scene seems ominous, yet no water falls. Arata suspends catastrophe at the exact moment before consequence, allowing wonder and anxiety to coexist.",
+        render: uid => `
+          <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="t-sky-${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#071528"/><stop offset="1" stop-color="#254659"/></linearGradient>
+              <linearGradient id="t-sea-${uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#427f8b"/><stop offset="1" stop-color="#132b4a"/></linearGradient>
+            </defs>
+            <rect width="320" height="220" fill="url(#t-sky-${uid})"/>
+            <path d="M0 0 H320 V76 C276 93 238 57 198 77 C151 101 122 62 78 80 C49 92 27 87 0 73Z" fill="url(#t-sea-${uid})"/>
+            <path d="M0 58 C44 42 77 76 119 56 C160 37 193 75 234 55 C265 40 292 53 320 45" fill="none" stroke="#9bcbd0" stroke-width="4" opacity=".52"/>
+            <path d="M0 73 C40 56 81 93 126 70 C166 50 205 88 247 67 C280 51 302 61 320 58" fill="none" stroke="#d6e3d1" stroke-width="2" opacity=".34"/>
+            <circle cx="244" cy="39" r="20" fill="#f2e3bc"/>
+            <circle cx="77" cy="126" r="15" fill="#f2e3bc" opacity=".82"/>
+            <g fill="#b7d9d2" opacity=".8">
+              <path d="M79 35 q16 -10 29 0 q-13 10 -29 0 M79 35 l-11 -7 v14Z"/>
+              <path d="M185 51 q13 -8 24 0 q-11 8 -24 0 M185 51 l-9 -6 v12Z"/>
+              <path d="M273 68 q10 -6 18 0 q-8 7 -18 0 M273 68 l-8 -5 v10Z"/>
+            </g>
+            <g fill="#131a27" stroke="#5a7180" stroke-width="1">
+              <rect x="0" y="159" width="28" height="61"/><rect x="28" y="139" width="33" height="81"/>
+              <rect x="61" y="171" width="24" height="49"/><rect x="85" y="126" width="42" height="94"/>
+              <rect x="127" y="151" width="29" height="69"/><rect x="156" y="118" width="35" height="102"/>
+              <rect x="191" y="164" width="27" height="56"/><rect x="218" y="133" width="39" height="87"/>
+              <rect x="257" y="153" width="24" height="67"/><rect x="281" y="121" width="39" height="99"/>
+            </g>
+            <g fill="#d8b96b" opacity=".8">
+              ${[12,41,96,112,169,184,231,247,294,307].map((x,i)=>`<rect x="${x}" y="${151+(i%3)*14}" width="4" height="7"/>`).join('')}
+            </g>
+            <path d="M145 126 L157 105 L169 126Z" fill="#8d4b4e"/>
+            <path d="M154 105 V83" stroke="#d4bd7d" stroke-width="2"/>
+            <circle cx="154" cy="80" r="3" fill="#f1d789"/>
+          </svg>`
+      },
+      {
+        id: "monsoon-memory",
+        title: "Monsoon Memory",
+        artist: "Anika Rao",
+        year: "2018",
+        style: "Contemporary Landscape",
+        movement: "Nature and Recall",
+        side: "right",
+        z: -2940,
+        description: "Rain crosses layered green hills while a silver river widens toward the viewer. A solitary tree bends but does not break, anchoring a landscape built from translucent veils.",
+        meaning: "The work considers how seasonal return reshapes personal memory. Each transparent hill represents an earlier version of the same place, visible beneath the present rather than erased by it.",
+        fact: "Rao limits the landscape to five greens, then changes their apparent temperature by placing them against blue, brown, or silver-gray surroundings.",
+        curator: "The river is the only shape without a hard edge. It acts as memory itself — continuous, reflective, and impossible to hold in one fixed form.",
+        render: uid => `
+          <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="m-sky-${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#81939d"/><stop offset="1" stop-color="#c2c9bd"/></linearGradient>
+              <linearGradient id="m-river-${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ccd5d0"/><stop offset="1" stop-color="#607783"/></linearGradient>
+            </defs>
+            <rect width="320" height="220" fill="url(#m-sky-${uid})"/>
+            <path d="M0 130 Q61 65 132 125 Q204 52 320 119 V220 H0Z" fill="#637b68" opacity=".72"/>
+            <path d="M0 151 Q72 91 148 144 Q228 80 320 139 V220 H0Z" fill="#4f6e5a" opacity=".86"/>
+            <path d="M0 174 Q81 128 160 170 Q245 112 320 161 V220 H0Z" fill="#375343"/>
+            <path d="M144 220 C121 190 154 163 165 142 C178 163 217 189 234 220Z" fill="url(#m-river-${uid})" opacity=".92"/>
+            <path d="M157 214 C149 186 169 169 165 146" fill="none" stroke="#eff1e7" stroke-width="3" opacity=".62"/>
+            <g stroke="#dce4df" stroke-width="1.2" opacity=".47">
+              ${Array.from({length:32},(_,i)=>`<line x1="${(i*19)%330}" y1="${10+(i%5)*8}" x2="${((i*19)%330)-18}" y2="${67+(i%5)*9}"/>`).join('')}
+            </g>
+            <g transform="translate(66 105)">
+              <path d="M0 69 Q8 36 12 0" fill="none" stroke="#2e3024" stroke-width="6" stroke-linecap="round"/>
+              <path d="M11 20 Q-12 6 -30 15 M10 27 Q31 4 51 13 M8 39 Q-16 29 -28 42" fill="none" stroke="#2e3024" stroke-width="3" stroke-linecap="round"/>
+              <g fill="#617458"><circle cx="-24" cy="12" r="15"/><circle cx="-6" cy="5" r="18"/><circle cx="20" cy="9" r="17"/><circle cx="43" cy="15" r="14"/><circle cx="-18" cy="35" r="14"/></g>
+            </g>
+            <path d="M0 203 Q78 184 135 205 M235 203 Q276 187 320 198" fill="none" stroke="#8aa077" stroke-width="5" opacity=".7"/>
+            <rect x="8" y="8" width="304" height="204" fill="none" stroke="#eef0e4" stroke-opacity=".2"/>
+          </svg>`
+      },
+      {
+        id: "kinetic-silence",
+        title: "Kinetic Silence",
+        artist: "Tomasz Wier",
+        year: "1971",
+        style: "Optical Constructivism",
+        movement: "Rhythm and Perception",
+        side: "left",
+        z: -3460,
+        description: "Nested rectangles and elliptical rings seem to contract, rotate, and release despite the image being entirely still. Gold interruptions prevent the black-and-cream rhythm from becoming mechanically predictable.",
+        meaning: "Wier treats attention as a physical force. The eye activates the work through involuntary motion, while the title reminds us that intense visual activity can occur in complete silence.",
+        fact: "No two rings share the same center point; the small offsets create the sensation of vibration without animation.",
+        curator: "Do not stare at the middle. Let your gaze rest near one corner and the entire structure begins to breathe in peripheral vision.",
+        render: uid => {
+          const rings = Array.from({length: 11}, (_, i) => {
+            const inset = 12 + i * 8;
+            const w = 320 - inset * 2;
+            const h = 220 - inset * 2;
+            const stroke = i % 3 === 0 ? "#c8a85c" : (i % 2 ? "#eee4cf" : "#17191d");
+            const angle = (i % 2 ? 1 : -1) * (i * 1.35);
+            return `<rect x="${inset}" y="${inset}" width="${w}" height="${h}" rx="${Math.max(2,20-i)}" fill="none" stroke="${stroke}" stroke-width="${i%3===0?5:3}" transform="rotate(${angle} 160 110)"/>`;
+          }).join("");
+          return `
+          <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="320" height="220" fill="#14171c"/>
+            <rect x="12" y="12" width="296" height="196" fill="#e8dec9"/>
+            ${rings}
+            <ellipse cx="158" cy="108" rx="58" ry="39" fill="none" stroke="#16191e" stroke-width="10" transform="rotate(-7 158 108)"/>
+            <ellipse cx="163" cy="112" rx="40" ry="26" fill="none" stroke="#c9a95d" stroke-width="8" transform="rotate(9 163 112)"/>
+            <ellipse cx="157" cy="107" rx="20" ry="13" fill="#651f33"/>
+            <circle cx="157" cy="107" r="5" fill="#f1dfae"/>
+            <path d="M23 42 L77 70 M246 160 L298 185 M33 182 L86 151 M239 66 L294 37" stroke="#6b2033" stroke-width="7"/>
+          </svg>`;
+        }
+      },
+      {
+        id: "letters-sun",
+        title: "Letters to the Sun",
+        artist: "Samira Haddad",
+        year: "2025",
+        style: "Contemporary Mixed Media",
+        movement: "Language and Material",
+        side: "right",
+        z: -3890,
+        description: "Fragments resembling envelopes, handwritten marks, and torn paper orbit a radiant ochre disc. Some forms are legible as language; others have been reduced to texture and gesture.",
+        meaning: "The work imagines communication sent toward something that cannot reply. It explores hope as an act of address: meaning created not by response, but by the decision to speak outward.",
+        fact: "Haddad designed the composition so that every paper fragment points toward the sun, although none follows a straight radial line.",
+        curator: "Read the work as a sky, then as a desk. The scale keeps shifting, turning private correspondence into a small cosmology.",
+        render: uid => `
+          <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="l-bg-${uid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#233b42"/><stop offset=".58" stop-color="#435a50"/><stop offset="1" stop-color="#1a2435"/></linearGradient>
+              <radialGradient id="l-sun-${uid}" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff0af"/><stop offset=".42" stop-color="#dfad48"/><stop offset="1" stop-color="#a35d2f"/></radialGradient>
+            </defs>
+            <rect width="320" height="220" fill="url(#l-bg-${uid})"/>
+            <circle cx="224" cy="77" r="48" fill="url(#l-sun-${uid})"/>
+            <circle cx="224" cy="77" r="59" fill="none" stroke="#e8cc82" stroke-width="2" stroke-dasharray="3 8" opacity=".65"/>
+            <g stroke="#4c3527" stroke-width="2">
+              <path d="M27 44 L99 34 L104 78 L35 88Z" fill="#e9ddc3"/>
+              <path d="M35 45 L66 65 L98 36" fill="none"/>
+              <path d="M89 118 L156 102 L165 151 L98 165Z" fill="#d1b57e"/>
+              <path d="M98 119 L127 133 L156 105" fill="none"/>
+              <path d="M181 145 L246 127 L256 172 L190 187Z" fill="#eee3ce"/>
+              <path d="M189 145 L220 157 L246 130" fill="none"/>
+              <path d="M250 159 L302 147 L309 190 L258 199Z" fill="#bb8059"/>
+            </g>
+            <g fill="#f3e7cc" opacity=".86">
+              <polygon points="20,133 69,111 80,145 36,162"/><polygon points="123,30 170,19 178,58 134,69"/>
+              <polygon points="49,178 115,171 118,207 55,211"/>
+            </g>
+            <g fill="none" stroke="#6a2638" stroke-width="2.2" stroke-linecap="round" opacity=".85">
+              <path d="M40 137 q14 -11 28 0 q-13 13 -27 4"/><path d="M132 38 q13 -7 27 3 q-10 7 -24 8"/>
+              <path d="M63 187 q18 -8 38 2 M65 195 q13 -5 30 1"/><path d="M109 132 q15 -10 36 2"/>
+            </g>
+            <g stroke="#e4c776" stroke-width="2" opacity=".65">
+              <path d="M102 57 Q165 51 188 69"/><path d="M157 127 Q185 106 204 97"/><path d="M247 123 Q260 104 265 91"/>
+              <path d="M119 188 Q176 152 193 119"/>
+            </g>
+            <g fill="#d9bd74"><circle cx="18" cy="23" r="3"/><circle cx="294" cy="29" r="3"/><circle cx="278" cy="112" r="2"/><circle cx="151" cy="83" r="2"/></g>
+            <path d="M12 207 C74 191 132 221 193 199 C241 181 271 207 320 186" fill="none" stroke="#d5b66b" stroke-width="3" opacity=".48"/>
+          </svg>`
+      }
+    ];
+
+    /* ================================================================
+       DOM REFERENCES AND STATE
+       ================================================================ */
+
+    const welcomeScreen = document.getElementById("welcomeScreen");
+    const enterGalleryButton = document.getElementById("enterGallery");
+    const welcomeTourButton = document.getElementById("welcomeTour");
+    const museumShell = document.getElementById("museumShell");
+    const viewport = document.getElementById("museumViewport");
+    const world = document.getElementById("world");
+    const cameraRig = document.getElementById("cameraRig");
+    const ambientLight = document.getElementById("ambientLight");
+    const artLayer = document.getElementById("artLayer");
+    const architectureLayer = document.getElementById("architectureLayer");
+    const dustLayer = document.getElementById("dustLayer");
+    const mapArtLayer = document.getElementById("mapArtLayer");
+    const visitorMarker = document.getElementById("visitorMarker");
+    const mapPosition = document.getElementById("mapPosition");
+    const sectionChip = document.getElementById("sectionChip");
+    const progressText = document.getElementById("progressText");
+    const progressBar = document.getElementById("progressBar");
+    const progressElement = document.querySelector(".progress-track");
+    const tourButton = document.getElementById("tourButton");
+    const resetButton = document.getElementById("resetButton");
+    const tourPanel = document.getElementById("tourPanel");
+    const tourKicker = document.getElementById("tourKicker");
+    const tourTitle = document.getElementById("tourTitle");
+    const tourByline = document.getElementById("tourByline");
+    const tourDetails = document.getElementById("tourDetails");
+    const tourPause = document.getElementById("tourPause");
+    const tourNext = document.getElementById("tourNext");
+    const tourEnd = document.getElementById("tourEnd");
+    const tourTimer = document.getElementById("tourTimer");
+    const hintToast = document.getElementById("hintToast");
+    const announcer = document.getElementById("announcer");
+
+    const modal = document.getElementById("artModal");
+    const modalDialog = modal.querySelector(".modal-dialog");
+    const modalClose = document.getElementById("modalClose");
+    const modalArtwork = document.getElementById("modalArtwork");
+    const modalFrame = document.getElementById("modalFrame");
+    const modalRoomLabel = document.getElementById("modalRoomLabel");
+    const modalContent = document.getElementById("modalContent");
+    const modalIndex = document.getElementById("modalIndex");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalArtist = document.getElementById("modalArtist");
+    const metadataRow = document.getElementById("metadataRow");
+    const modalDescription = document.getElementById("modalDescription");
+    const modalMeaning = document.getElementById("modalMeaning");
+    const modalFact = document.getElementById("modalFact");
+    const modalCurator = document.getElementById("modalCurator");
+    const modalPrevious = document.getElementById("modalPrevious");
+    const modalNext = document.getElementById("modalNext");
+
+    const MAX_Z = 4100;
+    const MAX_X = 190;
+    const TOUR_INTERVAL = 8000;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const camera = {
+      x: 0,
+      z: 0,
+      targetX: 0,
+      targetZ: 0,
+      yaw: 0,
+      targetYaw: 0,
+      pointerYaw: 0,
+      pointerPitch: 0,
+      pointerLightX: 0,
+      pointerLightY: 0,
+      lastTime: performance.now()
+    };
+
+    const pressedMoves = new Set();
+    const viewed = new Set();
+    const artworkNodes = [];
+    const mapDots = [];
+    let activeArtworkIndex = 0;
+    let lastFocusedElement = null;
+    let svgRenderNonce = 0;
+    let toastTimer = null;
+    let sectionName = "Entrance · Orientation Hall";
+    let transientHighlightTimer = null;
+    let modalCloseTimer = null;
+    let welcomeDismissed = false;
+
+    const tour = {
+      active: false,
+      paused: false,
+      index: -1,
+      timer: null,
+      resumeAfterModal: false
+    };
+
+    /* ================================================================
+       GALLERY CONSTRUCTION
+       ================================================================ */
+
+    function clamp(value, minimum, maximum) {
+      return Math.min(maximum, Math.max(minimum, value));
+    }
+
+    function padNumber(value) {
+      return String(value).padStart(2, "0");
+    }
+
+    function announce(message) {
+      announcer.textContent = "";
+      window.setTimeout(() => { announcer.textContent = message; }, 20);
+    }
+
+    function showToast(message, duration = 2400) {
+      window.clearTimeout(toastTimer);
+      hintToast.textContent = message;
+      hintToast.classList.add("is-visible");
+      toastTimer = window.setTimeout(() => hintToast.classList.remove("is-visible"), duration);
+    }
+
+    function buildArchitecture() {
+      const portals = [
+        { z: -1280, label: "Light & Atmosphere" },
+        { z: -2280, label: "Form & Memory" },
+        { z: -3280, label: "Dream & Perception" },
+        { z: -4320, label: "Final Gallery" }
+      ];
+
+      portals.forEach(({ z, label }) => {
+        const portal = document.createElement("div");
+        portal.className = "portal";
+        portal.dataset.section = label;
+        portal.style.transform = `translate3d(0, 0, ${z}px)`;
+        architectureLayer.appendChild(portal);
+      });
+
+      [-360, -1120, -1900, -2680, -3460, -4240].forEach(z => {
+        const light = document.createElement("div");
+        light.className = "ceiling-light";
+        light.style.transform = `translate3d(0, -309px, ${z}px) rotateX(90deg)`;
+        architectureLayer.appendChild(light);
+      });
+
+      [-1420, -3080].forEach((z, index) => {
+        const bench = document.createElement("div");
+        bench.className = "bench";
+        bench.style.transform = `translate3d(${index ? 40 : -50}px, 266px, ${z}px)`;
+        bench.innerHTML = `<span class="bench-seat"></span><span class="bench-leg left"></span><span class="bench-leg right"></span>`;
+        architectureLayer.appendChild(bench);
+      });
+    }
+
+    function buildDust() {
+      const count = reducedMotion ? 0 : 28;
+      for (let i = 0; i < count; i += 1) {
+        const particle = document.createElement("span");
+        particle.className = "dust";
+        particle.style.setProperty("--left", `${(i * 37) % 101}%`);
+        particle.style.setProperty("--top", `${(i * 61) % 96}%`);
+        particle.style.setProperty("--size", `${1 + (i % 3)}px`);
+        particle.style.setProperty("--opacity", `${0.12 + (i % 5) * 0.035}`);
+        particle.style.setProperty("--duration", `${8 + (i % 7) * 1.7}s`);
+        particle.style.setProperty("--delay", `${-(i % 9) * 1.1}s`);
+        particle.style.setProperty("--drift", `${-24 + (i % 8) * 7}px`);
+        dustLayer.appendChild(particle);
+      }
+    }
+
+    function buildArtworks() {
+      artworkData.forEach((art, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `artwork ${art.side}`;
+        button.id = `artwork-${art.id}`;
+        button.dataset.index = String(index);
+        button.setAttribute("aria-label", `${art.title} by ${art.artist}, ${art.year}. Open artwork details.`);
+        button.style.setProperty("--x", art.side === "left" ? "-486px" : "486px");
+        button.style.setProperty("--z", `${art.z}px`);
+        button.style.setProperty("--ry", art.side === "left" ? "78deg" : "-78deg");
+        button.innerHTML = `
+          <span class="art-sconce" aria-hidden="true"></span>
+          <span class="art-frame">
+            <span class="art-mat">
+              <span class="art-canvas">${art.render(`wall-${index}`)}</span>
+            </span>
+          </span>
+          <span class="wall-label" aria-hidden="true">
+            <strong>${art.title}</strong>
+            <span>${art.artist} · ${art.year}</span>
+          </span>
+          <span class="viewed-seal" aria-hidden="true">✓</span>`;
+
+        button.addEventListener("click", () => openArtwork(index, button));
+        artLayer.appendChild(button);
+        artworkNodes.push(button);
+
+        const mapDot = document.createElement("button");
+        mapDot.type = "button";
+        mapDot.className = `map-dot ${art.side}`;
+        mapDot.style.bottom = `${6 + (Math.abs(art.z) / 4770) * 140}px`;
+        mapDot.setAttribute("aria-label", `Move near ${art.title}`);
+        mapDot.title = art.title;
+        mapDot.addEventListener("click", () => jumpNearArtwork(index));
+        mapArtLayer.appendChild(mapDot);
+        mapDots.push(mapDot);
+      });
+    }
+
+    function loadViewedProgress() {
+      try {
+        const saved = JSON.parse(localStorage.getItem("aurelia-viewed") || "[]");
+        if (Array.isArray(saved)) {
+          saved.forEach(index => {
+            if (Number.isInteger(index) && artworkData[index]) viewed.add(index);
+          });
+        }
+      } catch (error) {
+        // Local files can have different storage policies. Progress still works in-memory.
+      }
+      updateProgress();
+    }
+
+    function saveViewedProgress() {
+      try {
+        localStorage.setItem("aurelia-viewed", JSON.stringify([...viewed]));
+      } catch (error) {
+        // In-memory progress remains available if browser storage is restricted.
+      }
+    }
+
+    function markViewed(index) {
+      if (!viewed.has(index)) {
+        viewed.add(index);
+        saveViewedProgress();
+      }
+      updateProgress();
+    }
+
+    function updateProgress() {
+      artworkNodes.forEach((node, index) => node.classList.toggle("is-viewed", viewed.has(index)));
+      mapDots.forEach((dot, index) => dot.classList.toggle("is-viewed", viewed.has(index)));
+      const count = viewed.size;
+      progressText.textContent = `${count} / ${artworkData.length}`;
+      progressBar.style.width = `${(count / artworkData.length) * 100}%`;
+      progressElement.setAttribute("aria-valuenow", String(count));
+    }
+
+    /* ================================================================
+       CAMERA, MOVEMENT, PARALLAX, AND MINI-MAP
+       ================================================================ */
+
+    function currentSection(z) {
+      if (z < 760) return "Entrance · Orientation Hall";
+      if (z < 1760) return "Gallery I · Light & Atmosphere";
+      if (z < 2780) return "Gallery II · Form & Memory";
+      if (z < 3660) return "Gallery III · Dream & Perception";
+      return "Gallery IV · Final Reflections";
+    }
+
+    function updateSection(z) {
+      const next = currentSection(z);
+      if (next === sectionName) return;
+      sectionName = next;
+      sectionChip.classList.add("is-changing");
+      window.setTimeout(() => {
+        sectionChip.textContent = next;
+        sectionChip.classList.remove("is-changing");
+      }, reducedMotion ? 0 : 140);
+    }
+
+    function clearMoveState() {
+      pressedMoves.clear();
+      document.querySelectorAll(".move-button").forEach(button => button.classList.remove("is-pressed"));
+    }
+
+    function interruptTourForManualMove() {
+      if (tour.active) endTour(false, "Guided tour ended. Manual navigation resumed.");
+      camera.targetYaw = 0;
+    }
+
+    function nudge(action) {
+      if (action === "forward") camera.targetZ += 115;
+      if (action === "back") camera.targetZ -= 115;
+      if (action === "left") camera.targetX -= 62;
+      if (action === "right") camera.targetX += 62;
+      camera.targetZ = clamp(camera.targetZ, 0, MAX_Z);
+      camera.targetX = clamp(camera.targetX, -MAX_X, MAX_X);
+    }
+
+    function animationFrame(now) {
+      const delta = Math.min((now - camera.lastTime) / 1000, 0.05);
+      camera.lastTime = now;
+
+      let moving = false;
+      const forwardSpeed = 430;
+      const lateralSpeed = 245;
+
+      if (pressedMoves.has("forward")) { camera.targetZ += forwardSpeed * delta; moving = true; }
+      if (pressedMoves.has("back")) { camera.targetZ -= forwardSpeed * delta; moving = true; }
+      if (pressedMoves.has("left")) { camera.targetX -= lateralSpeed * delta; moving = true; }
+      if (pressedMoves.has("right")) { camera.targetX += lateralSpeed * delta; moving = true; }
+
+      camera.targetZ = clamp(camera.targetZ, 0, MAX_Z);
+      camera.targetX = clamp(camera.targetX, -MAX_X, MAX_X);
+
+      const smoothing = reducedMotion ? 1 : 1 - Math.pow(0.0008, delta);
+      const yawSmoothing = reducedMotion ? 1 : 1 - Math.pow(0.004, delta);
+      camera.x += (camera.targetX - camera.x) * smoothing;
+      camera.z += (camera.targetZ - camera.z) * smoothing;
+      camera.yaw += (camera.targetYaw + camera.pointerYaw - camera.yaw) * yawSmoothing;
+
+      const bob = moving && !reducedMotion ? Math.sin(now * 0.013) * 1.6 : 0;
+      const roll = moving && !reducedMotion ? Math.sin(now * 0.009) * 0.14 : 0;
+      const pitch = camera.pointerPitch + (moving && !reducedMotion ? Math.sin(now * 0.011) * 0.13 : 0);
+
+      world.style.transform = `translate3d(${-camera.x.toFixed(2)}px, ${bob.toFixed(2)}px, ${camera.z.toFixed(2)}px)`;
+      cameraRig.style.transform = `rotateX(${pitch.toFixed(2)}deg) rotateY(${camera.yaw.toFixed(2)}deg) rotateZ(${roll.toFixed(2)}deg)`;
+
+      const mapTravel = clamp(camera.z / MAX_Z, 0, 1);
+      visitorMarker.style.bottom = `${6 + mapTravel * 140}px`;
+      mapPosition.textContent = `${Math.round(camera.z / 42)} m`;
+      ambientLight.style.setProperty("--light-x", `${camera.x * -0.18 + camera.pointerLightX}px`);
+      ambientLight.style.setProperty("--light-y", `${camera.pointerLightY}px`);
+      updateSection(camera.z);
+
+      requestAnimationFrame(animationFrame);
+    }
+
+    function jumpNearArtwork(index) {
+      const art = artworkData[index];
+      interruptTourForManualMove();
+      clearMoveState();
+      camera.targetX = art.side === "left" ? -150 : 150;
+      camera.targetZ = clamp(Math.abs(art.z) - 420, 0, MAX_Z);
+      camera.targetYaw = art.side === "left" ? -21 : 21;
+      highlightArtwork(index, false);
+      showToast(`Approaching “${art.title}” — click the illuminated frame for details.`);
+      announce(`Moving near ${art.title} by ${art.artist}.`);
+    }
+
+    function resetView() {
+      if (tour.active) endTour(false);
+      clearMoveState();
+      clearHighlights();
+      camera.targetX = 0;
+      camera.targetZ = 0;
+      camera.targetYaw = 0;
+      showToast("View reset to the museum entrance.");
+      announce("View reset to the museum entrance.");
+      viewport.focus({ preventScroll: true });
+    }
+
+    function handleKeyDown(event) {
+      if (!welcomeDismissed) {
+        if (event.key === "Enter" && event.target !== welcomeTourButton) enterMuseum(false);
+        return;
+      }
+
+      if (!modal.hidden) {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          closeArtwork();
+        }
+        return;
+      }
+
+      const key = event.key.toLowerCase();
+      const movementMap = {
+        arrowup: "forward", w: "forward",
+        arrowdown: "back", s: "back",
+        arrowleft: "left", a: "left",
+        arrowright: "right", d: "right"
+      };
+
+      if (movementMap[key]) {
+        event.preventDefault();
+        if (!pressedMoves.has(movementMap[key])) interruptTourForManualMove();
+        pressedMoves.add(movementMap[key]);
+        document.querySelector(`[data-move="${movementMap[key]}"]`)?.classList.add("is-pressed");
+        return;
+      }
+
+      if (key === "r") {
+        event.preventDefault();
+        resetView();
+      } else if (key === "g") {
+        event.preventDefault();
+        toggleTour();
+      } else if (key === "escape" && tour.active) {
+        event.preventDefault();
+        endTour(false);
+      }
+    }
+
+    function handleKeyUp(event) {
+      const key = event.key.toLowerCase();
+      const movementMap = {
+        arrowup: "forward", w: "forward",
+        arrowdown: "back", s: "back",
+        arrowleft: "left", a: "left",
+        arrowright: "right", d: "right"
+      };
+      if (movementMap[key]) {
+        pressedMoves.delete(movementMap[key]);
+        document.querySelector(`[data-move="${movementMap[key]}"]`)?.classList.remove("is-pressed");
+      }
+    }
+
+    function bindMovementButtons() {
+      document.querySelectorAll("[data-move]").forEach(button => {
+        const action = button.dataset.move;
+
+        button.addEventListener("pointerdown", event => {
+          event.preventDefault();
+          button.setPointerCapture?.(event.pointerId);
+          interruptTourForManualMove();
+          nudge(action);
+          pressedMoves.add(action);
+          button.classList.add("is-pressed");
+        });
+
+        const stop = () => {
+          pressedMoves.delete(action);
+          button.classList.remove("is-pressed");
+        };
+
+        button.addEventListener("pointerup", stop);
+        button.addEventListener("pointercancel", stop);
+        button.addEventListener("lostpointercapture", stop);
+
+        // Keyboard activation on a focused control creates a click with detail === 0.
+        button.addEventListener("click", event => {
+          if (event.detail === 0) {
+            interruptTourForManualMove();
+            nudge(action);
+          }
+        });
+      });
+    }
+
+    function bindParallax() {
+      // Keep the 3D camera stable for reliable painting selection. Pointer
+      // movement shifts only the ambient light, producing subtle parallax
+      // without making an artwork move away from the cursor.
+      viewport.addEventListener("pointermove", event => {
+        if (reducedMotion || !modal.hidden) return;
+        const rect = viewport.getBoundingClientRect();
+        const normalizedX = event.clientX / rect.width - 0.5;
+        const normalizedY = event.clientY / rect.height - 0.5;
+        camera.pointerLightX = normalizedX * 38;
+        camera.pointerLightY = normalizedY * 18;
+      });
+
+      viewport.addEventListener("pointerleave", () => {
+        camera.pointerLightX = 0;
+        camera.pointerLightY = 0;
+      });
+    }
+
+    /* ================================================================
+       ARTWORK MODAL — CONTENT, FOCUS, AND KEYBOARD ACCESSIBILITY
+       ================================================================ */
+
+    function clearHighlights() {
+      window.clearTimeout(transientHighlightTimer);
+      artworkNodes.forEach(node => node.classList.remove("is-selected", "tour-highlight"));
+      mapDots.forEach(dot => dot.classList.remove("is-active"));
+    }
+
+    function highlightArtwork(index, persistent = true) {
+      clearHighlights();
+      artworkNodes[index]?.classList.add(persistent ? "tour-highlight" : "is-selected");
+      mapDots[index]?.classList.add("is-active");
+      if (!persistent) {
+        transientHighlightTimer = window.setTimeout(() => {
+          artworkNodes[index]?.classList.remove("is-selected");
+          mapDots[index]?.classList.remove("is-active");
+        }, 2600);
+      }
+    }
+
+    function populateModal(index) {
+      const art = artworkData[index];
+      activeArtworkIndex = index;
+      svgRenderNonce += 1;
+      modalArtwork.innerHTML = art.render(`modal-${index}-${svgRenderNonce}`);
+      modalRoomLabel.textContent = `${art.title} · ${art.artist}, ${art.year}`;
+      modalIndex.textContent = `Gallery work ${padNumber(index + 1)} / ${padNumber(artworkData.length)}`;
+      modalTitle.textContent = art.title;
+      modalArtist.textContent = `${art.artist} · ${art.year}`;
+      metadataRow.innerHTML = `
+        <span class="metadata-chip">${art.style}</span>
+        <span class="metadata-chip">${art.movement}</span>
+        <span class="metadata-chip">Original digital study</span>`;
+      modalDescription.textContent = art.description;
+      modalMeaning.textContent = art.meaning;
+      modalFact.textContent = art.fact;
+      modalCurator.textContent = art.curator;
+      modalContent.scrollTop = 0;
+
+      modalFrame.style.animation = "none";
+      void modalFrame.offsetWidth;
+      modalFrame.style.animation = "";
+
+      artworkNodes.forEach((node, nodeIndex) => node.classList.toggle("is-selected", nodeIndex === index));
+      mapDots.forEach((dot, dotIndex) => dot.classList.toggle("is-active", dotIndex === index));
+      markViewed(index);
+    }
+
+    function openArtwork(index, trigger = artworkNodes[index]) {
+      window.clearTimeout(modalCloseTimer);
+      clearMoveState();
+      lastFocusedElement = trigger || document.activeElement;
+      populateModal(index);
+
+      if (tour.active && !tour.paused) {
+        tour.resumeAfterModal = true;
+        pauseTour(false);
+      } else {
+        tour.resumeAfterModal = false;
+      }
+
+      modal.hidden = false;
+      museumShell.inert = true;
+      museumShell.setAttribute("aria-hidden", "true");
+      requestAnimationFrame(() => {
+        modal.classList.add("is-open");
+        modalTitle.focus({ preventScroll: true });
+      });
+      announce(`${artworkData[index].title} details opened.`);
+    }
+
+    function closeArtwork() {
+      if (modal.hidden) return;
+      modal.classList.remove("is-open");
+      modalCloseTimer = window.setTimeout(() => {
+        modal.hidden = true;
+        museumShell.inert = false;
+        museumShell.setAttribute("aria-hidden", "false");
+        artworkNodes.forEach(node => node.classList.remove("is-selected"));
+        if (!tour.active) mapDots.forEach(dot => dot.classList.remove("is-active"));
+        if (lastFocusedElement && document.contains(lastFocusedElement)) {
+          lastFocusedElement.focus({ preventScroll: true });
+        } else {
+          viewport.focus({ preventScroll: true });
+        }
+        if (tour.active && tour.resumeAfterModal) resumeTour();
+        tour.resumeAfterModal = false;
+        announce("Artwork details closed. Returned to the gallery.");
+      }, reducedMotion ? 0 : 260);
+    }
+
+    function showAdjacentArtwork(direction) {
+      const nextIndex = (activeArtworkIndex + direction + artworkData.length) % artworkData.length;
+      lastFocusedElement = artworkNodes[nextIndex];
+      populateModal(nextIndex);
+      modalTitle.focus({ preventScroll: true });
+      announce(`${artworkData[nextIndex].title} by ${artworkData[nextIndex].artist}.`);
+    }
+
+    function trapModalFocus(event) {
+      if (event.key !== "Tab") return;
+      const focusable = [...modalDialog.querySelectorAll("button:not([disabled]), [href], [tabindex]:not([tabindex='-1'])")]
+        .filter(element => element.offsetParent !== null);
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+
+    /* ================================================================
+       GUIDED TOUR
+       ================================================================ */
+
+    function updateTourPanel() {
+      const art = artworkData[tour.index];
+      tourKicker.textContent = `Curator stop ${tour.index + 1} of ${artworkData.length}`;
+      tourTitle.textContent = art.title;
+      tourByline.textContent = `${art.artist} · ${art.year} · ${art.style}`;
+      tourPause.textContent = tour.paused ? "Resume" : "Pause";
+      tourNext.textContent = tour.index === artworkData.length - 1 ? "Finish" : "Next";
+    }
+
+    function restartTourTimer() {
+      window.clearTimeout(tour.timer);
+      tourTimer.classList.remove("is-running");
+      void tourTimer.offsetWidth;
+      if (!tour.active || tour.paused) return;
+      tourTimer.classList.add("is-running");
+      tour.timer = window.setTimeout(() => {
+        if (tour.index >= artworkData.length - 1) {
+          endTour(true);
+        } else {
+          advanceTour();
+        }
+      }, TOUR_INTERVAL);
+    }
+
+    function focusTourArtwork(index) {
+      const art = artworkData[index];
+      camera.targetX = art.side === "left" ? -152 : 152;
+      camera.targetZ = clamp(Math.abs(art.z) - 420, 0, MAX_Z);
+      camera.targetYaw = art.side === "left" ? -22 : 22;
+      highlightArtwork(index, true);
+      markViewed(index);
+      updateTourPanel();
+      restartTourTimer();
+      announce(`Curator stop ${index + 1}: ${art.title} by ${art.artist}.`);
+    }
+
+    function advanceTour() {
+      if (!tour.active) return;
+      if (tour.index < artworkData.length - 1) tour.index += 1;
+      focusTourArtwork(tour.index);
+    }
+
+    function startTour() {
+      if (!welcomeDismissed) {
+        enterMuseum(true);
+        return;
+      }
+      if (tour.active) return;
+      clearMoveState();
+      tour.active = true;
+      tour.paused = false;
+      tour.index = 0;
+      tourPanel.hidden = false;
+      tourButton.classList.add("is-active");
+      tourButton.querySelector("span:last-child").textContent = "End tour";
+      focusTourArtwork(0);
+      showToast("Guided tour started. It advances automatically; use Pause or Next at any time.", 3400);
+    }
+
+    function pauseTour(announceChange = true) {
+      if (!tour.active || tour.paused) return;
+      tour.paused = true;
+      window.clearTimeout(tour.timer);
+      tourTimer.classList.remove("is-running");
+      updateTourPanel();
+      if (announceChange) announce("Guided tour paused.");
+    }
+
+    function resumeTour() {
+      if (!tour.active || !tour.paused) return;
+      tour.paused = false;
+      updateTourPanel();
+      restartTourTimer();
+      announce("Guided tour resumed.");
+    }
+
+    function toggleTourPause() {
+      if (tour.paused) resumeTour();
+      else pauseTour();
+    }
+
+    function endTour(completed = false, message = "") {
+      if (!tour.active) return;
+      window.clearTimeout(tour.timer);
+      tour.active = false;
+      tour.paused = false;
+      tour.index = -1;
+      tourPanel.hidden = true;
+      tourTimer.classList.remove("is-running");
+      tourButton.classList.remove("is-active");
+      tourButton.querySelector("span:last-child").textContent = "Guided tour";
+      camera.targetYaw = 0;
+      clearHighlights();
+      const finalMessage = message || (completed
+        ? "Curator tour complete. You have reached the final gallery."
+        : "Guided tour ended. Explore freely at your own pace.");
+      showToast(finalMessage, 3200);
+      announce(finalMessage);
+    }
+
+    function toggleTour() {
+      if (tour.active) endTour(false);
+      else startTour();
+    }
+
+    /* ================================================================
+       WELCOME AND EVENT BINDING
+       ================================================================ */
+
+    function enterMuseum(startWithTour = false) {
+      if (welcomeDismissed) {
+        if (startWithTour) startTour();
+        return;
+      }
+      welcomeDismissed = true;
+      welcomeScreen.classList.add("is-leaving");
+      const finish = () => {
+        welcomeScreen.hidden = true;
+        museumShell.inert = false;
+        museumShell.setAttribute("aria-hidden", "false");
+        viewport.focus({ preventScroll: true });
+        showToast("Use arrow keys or W A S D to walk. Click an illuminated painting to read its story.", 4200);
+        if (startWithTour) startTour();
+      };
+      window.setTimeout(finish, reducedMotion ? 0 : 620);
+    }
+
+    function trapWelcomeFocus(event) {
+      if (welcomeDismissed || event.key !== "Tab") return;
+      const focusable = [enterGalleryButton, welcomeTourButton];
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+
+    welcomeScreen.addEventListener("keydown", trapWelcomeFocus);
+    enterGalleryButton.addEventListener("click", () => enterMuseum(false));
+    welcomeTourButton.addEventListener("click", () => enterMuseum(true));
+    resetButton.addEventListener("click", resetView);
+    tourButton.addEventListener("click", toggleTour);
+    tourPause.addEventListener("click", toggleTourPause);
+    tourNext.addEventListener("click", () => {
+      if (tour.index >= artworkData.length - 1) endTour(true);
+      else advanceTour();
+    });
+    tourEnd.addEventListener("click", () => endTour(false));
+    tourDetails.addEventListener("click", () => openArtwork(tour.index, artworkNodes[tour.index]));
+
+    modalClose.addEventListener("click", closeArtwork);
+    modalPrevious.addEventListener("click", () => showAdjacentArtwork(-1));
+    modalNext.addEventListener("click", () => showAdjacentArtwork(1));
+    modal.addEventListener("pointerdown", event => {
+      if (event.target === modal) closeArtwork();
+    });
+    modalDialog.addEventListener("keydown", trapModalFocus);
+
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keyup", handleKeyUp);
+    window.addEventListener("blur", clearMoveState);
+    document.addEventListener("visibilitychange", () => { if (document.hidden) clearMoveState(); });
+
+    buildArchitecture();
+    buildDust();
+    buildArtworks();
+    loadViewedProgress();
+    bindMovementButtons();
+    bindParallax();
+    enterGalleryButton.focus({ preventScroll: true });
+    requestAnimationFrame(animationFrame);
+  </script>
+</body>
+</html>
